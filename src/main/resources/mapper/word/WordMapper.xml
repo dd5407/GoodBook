@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.word.WordMapper">
+    <select id="getWords" resultType="com.ddpzp.xiaogu_word.po.Word">
+        SELECT * FROM word_book
+        <where>
+            <if test="query!=null and query!=''">
+                chinese like "%"#{query}"%" or english like "%"#{query}"%"
+            </if>
+            <if test="username!=null and username!=''">
+                and creator=#{username}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
+
+    <insert id="addWord" parameterType="com.ddpzp.xiaogu_word.po.Word">
+        INSERT INTO word_book
+        (english,chinese,create_time,creator)
+        VALUES
+        (#{english},#{chinese},#{createTime},#{creator})
+    </insert>
+
+    <select id="getWord" resultType="com.ddpzp.xiaogu_word.po.Word">
+        SELECT * FROM word_book WHERE id=#{id}
+    </select>
+
+    <delete id="deleteWord">
+        delete from word_book where id=#{id}
+    </delete>
+
+    <select id="countWords" resultType="java.lang.Integer">
+        select count(*) from word_book
+        <where>
+            <if test="query!=null and query!=''">
+                chinese like "%"#{query}"%" or english like "%"#{query}"%"
+            </if>
+            <if test="username!=null and username!=''">
+                and creator=#{username}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateWord" parameterType="com.ddpzp.xiaogu_word.po.Word">
+        update word_book
+        set chinese=#{chinese},
+        english=#{english},
+        update_time=#{updateTime}
+        where id=#{id}
+    </update>
+
+    <select id="getWordByEnglish" resultType="com.ddpzp.xiaogu_word.po.Word">
+        select * from word_book
+        where english=#{english} and creator=#{creator}
+    </select>
+
+    <delete id="batchDelete">
+        delete from word_book
+        where id in
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

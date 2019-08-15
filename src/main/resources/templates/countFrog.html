@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/toastr.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/head/head.css}"/>
+    <script type="text/javascript" th:src="@{/js/common/jquery-3.4.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/toastr.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/game/countFrog.js}"></script>
+    <title>数青蛙</title>
+</head>
+<body>
+<div class="container">
+    <div class="row" style="padding: 20px">
+        <div class="col-lg-12 col-xs-12">
+            <label>起始</label>
+            <input id="startNum" type="text" name="startNum" placeholder="从第几只开始"/>
+            <label>数量</label>
+            <input id="size" type="text" name="size" placeholder="数几只" />
+            <label>疯狂模式</label>
+            <input id="crazyMode" type="checkbox" />
+            <button class="btn btn-primary search_btn" type="button" id="searchFrogBtn">查询</button>
+            <button class="btn btn-primary search_btn" type="button" id="resetFrogBtn">重置</button>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <table id="tb" class="table">
+                <thead>
+                <tr>
+                    <th>青蛙</th>
+                    <th>嘴</th>
+                    <th>眼睛</th>
+                    <th>腿</th>
+                </tr>
+                </thead>
+                <tbody id="frogList">
+                <tr th:each="frog:${frogList}">
+                    <td th:text="${frog.num}">-</td>
+                    <td th:text="${frog.month}">-</td>
+                    <td th:text="${frog.eye}">-</td>
+                    <td th:text="${frog.leg}">-</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

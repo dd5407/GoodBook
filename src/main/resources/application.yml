@@ -1,0 +1,25 @@
+server:
+  port: 8080
+datasource:
+#  url: 
+  url: 
+  username: 
+  password: 
+  driver-class-name: com.mysql.jdbc.Driver
+  maxActive: 20
+  initialSize: 1
+  maxWait: 60000
+  minIdle: 1
+  timeBetweenEvictionRunsMillis: 60000
+  minEvictableIdleTimeMillis: 300000
+  validationQuery: select 'x'
+  testWhileIdle: true
+  testOnBorrow: false
+  testOnReturn: false
+  poolPreparedStatements: true
+  maxOpenPreparedStatements: 20
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
