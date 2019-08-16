@@ -3,13 +3,13 @@ $(function () {
         var startNum = $('#startNum').val();
         var size = $('#size').val();
         var crazyMode = $('#crazyMode').is(':checked');
-        var reg = /^[1-9]\d*$/;
+        var reg = /^[1-9]\d{0,8}$/;
         if (!reg.exec(startNum)) {
-            toastr.error("大佬，起始数请输入正整数！");
+            toastr.error("大佬，起始数请输入9位以内正整数！");
             return;
         }
         if (!reg.exec(size)) {
-            toastr.error("大佬，数量请输入正整数！");
+            toastr.error("大佬，数量请输入9位以内正整数！");
             return
         }
 

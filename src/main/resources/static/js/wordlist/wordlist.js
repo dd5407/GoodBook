@@ -86,15 +86,32 @@ $(function () {
             delEnglishList.push(english);
         });
         if (ids.length <= 0) {
-            alert("大佬，至少选一个呗！");
+            $.alert({
+                title: "大佬",
+                content: "至少选一个呗！",
+                buttons: {
+                    好: function () {
+
+                    }
+                }
+            })
             return;
         }
-        if (window.confirm("确认删除[" + delEnglishList + "]吗？")) {
-            methods.batchDelete(ids);
-        } else {
-            return;
-        }
-    })
+        $.confirm({
+            theme: "modern",
+            title: "批量删除单词",
+            content: "确认删除[" + delEnglishList + "]吗？",
+            buttons: {
+                确定: function () {
+                    toastr.success("Let them go...");
+                    methods.batchDelete(ids);
+                },
+                取消: function () {
+                    return;
+                }
+            }
+        })
+    });
 })
 
 var current = 1;
@@ -145,9 +162,19 @@ function deleteModal(ele) {
         chinese: tr.find("[name=chinese]").text()
     };
     console.log(word);
-    if (window.confirm("单词删除后无法恢复，确认删除[" + word.english + "][" + word.chinese + "]吗？")) {
-        methods.deleteWord(word);
-    }
+    $.confirm({
+        theme: 'light',
+        title: "删除单词",
+        content: "单词删除后无法恢复，确认删除[" + word.english + "][" + word.chinese + "]吗？",
+        buttons: {
+            确定: function () {
+                methods.deleteWord(word);
+            },
+            取消: function () {
+                return;
+            }
+        }
+    });
 }
 
 function refreshList() {
