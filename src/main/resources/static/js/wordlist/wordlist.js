@@ -29,6 +29,8 @@ $(function () {
         });
         //恢复按钮状态
         btn.button('reset');
+        //复原批量复选框
+        $("#batchCheckBox").prop("checked", false);
     });
 
     //模态框确认：新增、修改
