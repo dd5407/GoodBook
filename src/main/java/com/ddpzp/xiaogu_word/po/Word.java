@@ -6,6 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
+ * 单词
  * Created by dd
  * Date 2019/7/25 0:25
  */

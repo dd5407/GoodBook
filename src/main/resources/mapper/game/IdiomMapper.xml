@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.game.IdiomMapper">
+    <select id="countIdiom" resultType="java.lang.Integer">
+        select count(*) from idiom
+    </select>
+    <select id="getIdiomByIndex" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
+        select * from idiom limit #{index},1
+    </select>
+</mapper>

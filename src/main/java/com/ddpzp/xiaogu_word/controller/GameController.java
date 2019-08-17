@@ -3,6 +3,7 @@ package com.ddpzp.xiaogu_word.controller;
 import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.model.JsonResult;
 import com.ddpzp.xiaogu_word.po.game.Frog;
+import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/gu/game/")
 @Controller
-public class GameController extends BaseController{
+public class GameController extends BaseController {
     @Autowired
     private HttpServletRequest request;
     @Autowired
@@ -71,5 +72,17 @@ public class GameController extends BaseController{
         List<Frog> list = gameService.countFrog(1, 100);
         model.addAttribute("frogList", list);
         return "countFrog";
+    }
+
+    @GetMapping("/randomIdiom")
+    @ResponseBody
+    public JsonResult randomIdiom() {
+        try {
+            Idiom idiom = gameService.randomIdiom();
+            return JsonResult.success(idiom);
+        } catch (Exception e) {
+            log.error("随机获取成语失败！", e);
+            return JsonResult.error(e.getMessage());
+        }
     }
 }
