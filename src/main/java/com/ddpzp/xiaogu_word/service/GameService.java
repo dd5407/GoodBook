@@ -25,4 +25,16 @@ public interface GameService {
      * @return
      */
     Idiom randomIdiom() throws Exception;
+
+    /**
+     * 初始化成语，从网上爬取成语数据
+     */
+    void initIdiomData();
+
+    /**
+     * 添加成语
+     *
+     * @param idiom
+     */
+    void addIdiom(Idiom idiom) throws Exception;
 }

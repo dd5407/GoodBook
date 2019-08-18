@@ -22,4 +22,17 @@ public interface IdiomMapper {
      * @return
      */
     Idiom getIdiomByIndex(int index);
+
+    /**
+     * 添加成语
+     * @param idiom
+     */
+    void addIdiom(Idiom idiom);
+
+    /**
+     * 获取成语
+     * @param word
+     * @return
+     */
+    Idiom getIdiomByWord(String word);
 }

@@ -7,4 +7,23 @@
     <select id="getIdiomByIndex" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
         select * from idiom limit #{index},1
     </select>
+    <insert id="addIdiom" parameterType="com.ddpzp.xiaogu_word.po.game.Idiom">
+        insert into idiom
+        (word,means,
+        phonetic_pinyin,first_pinyin,
+        second_pinyin,third_pinyin,
+        fourth_pinyin,level,
+        pass_count,miss_count,
+        create_time
+        ) values (
+        #{word},#{means},
+        #{phoneticPinyin},#{firstPinyin},
+        #{secondPinyin},#{thirdPinyin},
+        #{fourthPinyin},#{level},
+        #{passCount},#{missCount},
+        CURRENT_TIMESTAMP)
+    </insert>
+    <select id="getIdiomByWord" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
+        select * from idiom where word=#{word} limit 1
+    </select>
 </mapper>

@@ -14,7 +14,14 @@ import java.util.Date;
 public class Idiom {
     private Integer id;
     private String word;
-    private String describe;
+    /**
+     * 成语释义
+     */
+    private String means;
+    /**
+     * 注音拼音
+     */
+    private String phoneticPinyin;
     private String firstPinyin;
     private String secondPinyin;
     private String thirdPinyin;
@@ -22,15 +29,15 @@ public class Idiom {
     /**
      * 难度，数字越大难度越大
      */
-    private Integer level;
+    private Integer level = 0;
     /**
      * 猜中次数
      */
-    private Integer passCount;
+    private Integer passCount = 0;
     /**
      * 没猜中次数
      */
-    private Integer missCount;
+    private Integer missCount = 0;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 }
