@@ -9,6 +9,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -63,6 +64,11 @@ public class IdiomCollection {
                     break;
                 }
                 HtmlSpan span = (HtmlSpan) nextPageBtn;
+                //最后一页
+                if(StringUtils.equals(span.getAttribute("style"),"visibility:hidden;")){
+                    log.info("The last page over!");
+                    break;
+                }
                 //点击下一页，获取新页面
                 page = span.click();
                 pageNum++;
