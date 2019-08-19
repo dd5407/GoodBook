@@ -65,6 +65,12 @@ public class GameController extends BaseController {
         }
     }
 
+    /**
+     * 跳转数青蛙页面
+     *
+     * @param model
+     * @return
+     */
     @GetMapping("/countFrogPage")
     public String frogCountPage(Model model) {
         String username = getUsername(session);
@@ -84,5 +90,17 @@ public class GameController extends BaseController {
             log.error("随机获取成语失败！", e);
             return JsonResult.error(e.getMessage());
         }
+    }
+
+    /**
+     * 跳转成语页面
+     *
+     * @return
+     */
+    @GetMapping("/idiomPage")
+    public String idiomPage() {
+        String username = getUsername(session);
+        log.info("Idiom,username={}", username);
+        return "idiom";
     }
 }

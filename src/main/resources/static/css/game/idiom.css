@@ -1,0 +1,10 @@
+.search_input {
+    height: 35px;
+    line-height: 35px;
+    margin: 15px 10px 0 0;
+    float: left;
+}
+
+#idiomPanel {
+    margin-top: 50px;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>成语</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/toastr.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/jquery-confirm.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/game/idiom.css}"/>
+    <script type="text/javascript" th:src="@{/js/common/jquery-3.4.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/toastr.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/jquery-confirm.js}"></script>
+    <script type="text/javascript" th:src="@{/js/game/idiom.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <p>
+                <button id="randomIdiomBtn" class="btn btn-primary">转屏猜成语</button>
+            </p>
+        </div>
+    </div>
+    <div class="row" hidden="hidden">
+        <div class="col-lg-12 col-xs-12">
+            <p>
+            <div class="seach_input">
+                <button id="idiomLinkBtn" class="btn btn-success">成语接龙</button>
+            </div>
+            <div class="search_input">
+                <input type="text" class="form-control" placeholder="请输入要接的字或拼音">
+            </div>
+            <div class="search_input">
+                <select id="idiomIndex" class="form-control">
+                    <option value="2">接第2个字</option>
+                    <option value="3">接第3个字</option>
+                    <option value="4" selected>接第4个字</option>
+                </select>
+            </div>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <div id="idiomPanel" class="panel panel-success" hidden="hidden">
+                <div class="panel-heading">
+                    <h3 id="idiomPanelTitle" class="panel-title"></h3>
+                </div>
+                <div id="idiomPanelBody" class="panel-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

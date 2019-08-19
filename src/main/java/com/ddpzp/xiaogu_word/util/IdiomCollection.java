@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 基于jsoup爬取成语
+ * 基于htmlUnit和jsoup爬取成语
  * Created by dd
  * Date 2019/8/18 12:36
  */
@@ -65,7 +65,7 @@ public class IdiomCollection {
                 }
                 HtmlSpan span = (HtmlSpan) nextPageBtn;
                 //最后一页
-                if(StringUtils.equals(span.getAttribute("style"),"visibility:hidden;")){
+                if (StringUtils.equals(span.getAttribute("style"), "visibility:hidden;")) {
                     log.info("The last page over!");
                     break;
                 }
@@ -145,4 +145,5 @@ public class IdiomCollection {
             log.error("Parse [{}] failed!", href);
         }
     }
+
 }
