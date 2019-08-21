@@ -1,6 +1,7 @@
 package com.ddpzp.xiaogu_word;
 
 import com.alibaba.fastjson.JSON;
+import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.mapper.word.WordMapper;
 import com.ddpzp.xiaogu_word.po.Word;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
@@ -32,9 +33,13 @@ public class XiaoguWordApplicationTests {
 
     @Test
     public void getRandomIdiom() throws Exception {
-        for (int i = 0; i < 10; i++) {
-            Idiom idiom = gameService.randomIdiom();
-            System.out.println(JSON.toJSONString(idiom));
+        try {
+            for (int i = 0; i < 10; i++) {
+                Idiom idiom = gameService.randomIdiom();
+                System.out.println(JSON.toJSONString(idiom));
+            }
+        } catch (GbException ge) {
+            System.out.println(ge.getMessage());
         }
     }
 

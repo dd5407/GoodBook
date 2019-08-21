@@ -1,7 +1,7 @@
 CREATE TABLE `idiom` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `word` varchar(64) NOT NULL COMMENT '成语',
-  `means` varchar(255) DEFAULT NULL COMMENT '成语解释',
+  `means` varchar(1000) DEFAULT NULL COMMENT '成语解释',
   `phonetic_pinyin` varchar(64) DEFAULT NULL COMMENT '注音拼音',
   `first_pinyin` varchar(10) DEFAULT NULL COMMENT '第一个字拼音',
   `second_pinyin` varchar(10) DEFAULT NULL COMMENT '第二个字拼音',

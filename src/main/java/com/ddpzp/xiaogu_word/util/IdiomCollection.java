@@ -2,6 +2,8 @@ package com.ddpzp.xiaogu_word.util;
 
 import com.alibaba.fastjson.JSON;
 import com.ddpzp.xiaogu_word.exception.GbException;
+import com.ddpzp.xiaogu_word.model.baiduHanyu.BaiduHanyuIdiom;
+import com.ddpzp.xiaogu_word.model.baiduHanyu.BaiduHanyuIdiomPage;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -16,6 +18,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 基于htmlUnit和jsoup爬取成语
@@ -32,9 +38,14 @@ public class IdiomCollection {
      * 爬取百度
      */
     public void baiduParser() {
-        String url = "https://www.baidu.com/s?wd=成语&rsv_spt=1&rsv_iqid=0xe92c743200023604"
-                + "&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_dl=ib&rsv_sug3=9"
-                + "&rsv_sug1=8&rsv_sug7=101&rsv_sug2=0&inputT=1048&rsv_sug4=1735&rsv_sug=2";
+        String[] urls = {"https://www.baidu.com/s?wd=成语&rsv_spt=1&rsv_iqid=0xe92c743200023604&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&tn=baiduhome_pg&rsv_enter=1&rsv_dl=ib&rsv_sug3=9&rsv_sug1=8&rsv_sug7=101&rsv_sug2=0&inputT=1048&rsv_sug4=1735&rsv_sug=2"
+                , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=心理成语&oq=%25E5%259B%259B%25E5%25AD%2597%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=98a9960800009368&rsv_t=d786CBPV0YzX9iHrILRlNlUcrI24cchgnyfJDGEm39WkfJQHTiTEp6ehq5M&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=5122&rsv_sug3=44&rsv_sug1=32&rsv_sug7=100&rsv_sug2=0&rsv_sug4=5122"
+                , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=动物成语&oq=%25E5%25BF%2583%25E7%2590%2586%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=d824d1e5000091b4&rsv_t=27dfUZN11Urcb2b8hzGrCPeqORME3%2B4m%2BnSdMBH0vtUIlIH56UhIKkRZZ48&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=5122&rsv_sug3=51&rsv_sug1=38&rsv_sug7=100&bs=心理成语"
+                , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=植物成语&oq=%25E5%258A%25A8%25E7%2589%25A9%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=809ed14700085972&rsv_t=0818jZveCw5BT3oo%2FGpI0R1o2sZnSwIukYoZJLcSHUZQ0apDf5%2FgHt8Awx0&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=665173&rsv_sug3=57&rsv_sug1=41&rsv_sug7=100&bs=动物成语"
+                , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=aabb成语&oq=abac%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=fe8e58580000ede2&rsv_t=9a99FmGe6tMdI3gjqmqWu3i8cTuvJd8%2FQ6PY%2FwW2GaPWaD9BKxHG5mrm99I&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=40725&rsv_sug3=87&rsv_sug1=71&rsv_sug7=100&bs=abac成语"
+                , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=abac成语&oq=aabb%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=b6eb530c0000db48&rsv_t=87d3dOx8tQ2ge%2FmvKsew1jmCZJSlsPFZq3%2FDk1rtrVFag2xb4HJCWgn5A0E&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=1386&rsv_sug3=76&rsv_sug1=60&rsv_sug7=100&bs=aabb成语"
+                , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=aabc成语&oq=abac%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=fe8e58580000ede2&rsv_t=c9489%2FvjSg5L6jeqH%2BPQXmbdRYX%2FX%2BYEqnQlAddnu0eSrZJlcqVNqivRguY&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=40725&rsv_sug3=85&rsv_sug1=69&rsv_sug7=100&bs=abac成语"};
+
         WebClient webClient = new WebClient(BrowserVersion.CHROME);
         webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setCssEnabled(false);
@@ -42,7 +53,21 @@ public class IdiomCollection {
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setTimeout(30000);
+        for (String url : urls) {
+            parseEachUrl(webClient, url);
+        }
+        webClient.close();
+        log.info("Parse baidu complete!");
+    }
+
+    /**
+     * 使用htmlUnit解析每个url
+     *
+     * @param url
+     */
+    private void parseEachUrl(WebClient webClient, String url) {
         try {
+            log.info("Parse url start! url={}", url);
             //先使用httpUnit获取页面（以便点击按钮动态js翻页，jsoup只能获取静态页面，不能点击按钮进行翻页）
             HtmlPage page = webClient.getPage(url);
             webClient.waitForBackgroundJavaScript(30000);
@@ -73,11 +98,9 @@ public class IdiomCollection {
                 page = span.click();
                 pageNum++;
             }
-            log.info("Parse baidu complete!");
+            log.info("Parse url complete! url={}", url);
         } catch (Exception e) {
-            log.error("Baidu parser error!", e);
-        } finally {
-            webClient.close();
+            log.error("Parse url error! url={}", url, e);
         }
     }
 
@@ -97,14 +120,14 @@ public class IdiomCollection {
             //搜索链接（内链），该链接以该成语为搜索词，进行搜索
             String href = a.attr("href");
             //标题为成语
-            String word = a.attr("title");
+            String word = a.attr("title").trim();
             if (word.length() != 4) {
                 log.warn("[{}]不是四字成语，不录入！", word);
                 continue;
             }
             //内链需要加上域名，组成完整链接
             href = "https://www.baidu.com" + href;
-            log.info("===========<a> title={}, href={}============", word, href);
+            log.info("[搜索链接] word={}, href={}", word, href);
             //进入成语搜索页获取成语释义
             gotoLinkForIdiomMeans(href, idiom);
             idiom.setWord(word);
@@ -128,22 +151,135 @@ public class IdiomCollection {
     private void gotoLinkForIdiomMeans(String href, Idiom idiom) {
         try {
             Document doc = Jsoup.connect(href).get();
-            //获取成语的百度百科链接
-            String baikeHref = doc.select("#1 p[class=c-gap-top-small c-gap-bottom-small] a").attr("href");
-            log.info("百度百科href:{}", baikeHref);
-            //进入百度百科
-            Document baikeDoc = Jsoup.connect(baikeHref).get();
-            //注音拼音
-            String phoneticPinyin = baikeDoc.select("#idiom-body div[class=content means imeans] dt").text();
-            //成语完整释义
-            String idiomMeans = baikeDoc.select("#idiom-body div[class=content means imeans] dd p").text().trim();
-            idiom.setPhoneticPinyin(phoneticPinyin);
-            idiom.setMeans(idiomMeans);
-            log.info("注音拼音：{}", phoneticPinyin);
-            log.info("释义：{}", idiomMeans);
+            //获取成语的百度汉语链接
+            String baiduHanyuHref = doc.select("#1 p[class=c-gap-top-small c-gap-bottom-small] a").attr("href");
+            if (StringUtils.isBlank(baiduHanyuHref)) {
+                log.info("百度汉语链接为空！");
+                return;
+            }
+            log.info("[百度汉语链接] href={}", baiduHanyuHref);
+            //解析百度汉语页面，获取注音拼音和释义放入idiom
+            parseBaiduHanyu(idiom, baiduHanyuHref);
         } catch (Exception e) {
-            log.error("Parse [{}] failed!", href);
+            log.error("Parse link failed! href={}", href);
         }
     }
 
+    /**
+     * 解析百度汉语页面，获取释义和注音拼音
+     *
+     * @param idiom
+     * @param baiduHanyuHref
+     * @throws IOException
+     */
+    private void parseBaiduHanyu(Idiom idiom, String baiduHanyuHref) throws IOException {
+        //进入百度汉语
+        Document baiduHanyuDoc = Jsoup.connect(baiduHanyuHref).get();
+        //注音拼音
+        String phoneticPinyin = baiduHanyuDoc.select("#idiom-body div[class=content means imeans] dt").text().trim();
+        if (StringUtils.isEmpty(phoneticPinyin)) {
+            phoneticPinyin = baiduHanyuDoc.select("#basicmean-wrapper .pinyin").text().trim();
+        }
+        //成语完整释义
+        String idiomMeans = baiduHanyuDoc.select("#idiom-body div[class=content means imeans] dd p").text().trim();
+        if (StringUtils.isEmpty(idiomMeans)) {
+            idiomMeans = baiduHanyuDoc.select("#basicmean-wrapper dd p").text().trim();
+        }
+        if (StringUtils.isEmpty(idiomMeans)) {
+            String baikeMeans = getBaikeMeansWithoutDefinition(baiduHanyuHref);
+            idiomMeans = StringUtils.isBlank(baikeMeans) ? "暂无" : baikeMeans;
+        }
+        idiom.setPhoneticPinyin(phoneticPinyin);
+        idiom.setMeans(idiomMeans);
+    }
+
+    /**
+     * 百度汉语爬虫，爬首页成语页面
+     */
+    public void hanyuIdiomSpider() {
+        //ajax获取数据的url前缀，去除页码
+        String ajaxDataUrlPrefix = "https://hanyu.baidu.com/hanyu/ajax/search_list?wd=%E6%88%90%E8%AF%AD&device=pc&from=home&pn=";
+        try {
+            log.info("Baidu hanyu idiom spider start...");
+            //获取总页数
+            Integer pageCount = getTotalPage(ajaxDataUrlPrefix + 1);
+            for (int i = 1; i <= pageCount; i++) {
+                log.info("BaiduHanyu spider process. current page={} and {} pages left", i, pageCount - i);
+                //发送请求并解析返回数据，并往数据库添加成语
+                processPage(ajaxDataUrlPrefix + i);
+            }
+            log.info("Baidu hanyu idiom spider process complete！");
+        } catch (Exception e) {
+            log.error("百度汉语爬取失败！", e);
+        }
+    }
+
+    /**
+     * 请求第一页来获取总页数
+     *
+     * @param firstUrl
+     * @return
+     * @throws IOException
+     */
+    private Integer getTotalPage(String firstUrl) throws IOException {
+        String json = Jsoup.connect(firstUrl).ignoreContentType(true).execute().body();
+        BaiduHanyuIdiomPage page = JSON.parseObject(json, BaiduHanyuIdiomPage.class);
+        Map<String, Integer> extra = page.getExtra();
+        log.info("成语总数：{}，每页条数：{}，总页数：{}", extra.get("entity-num"),
+                extra.get("return-num"), extra.get("total-page"));
+        return extra.get("total-page");
+    }
+
+    private void processPage(String ajaxDataUrl) {
+        String json = null;
+        try {
+            json = Jsoup.connect(ajaxDataUrl).ignoreContentType(true).execute().body();
+            BaiduHanyuIdiomPage page = JSON.parseObject(json, BaiduHanyuIdiomPage.class);
+            List<BaiduHanyuIdiom> retArray = page.getRet_array();
+            for (BaiduHanyuIdiom baiduIdiom : retArray) {
+                String word = baiduIdiom.getName().get(0).trim();
+                String means = baiduIdiom.getDefinition().get(0).trim();
+                String phoneticPinyin = baiduIdiom.getPinyin().get(0).trim();
+                if (means.length() <= 0) {
+                    //如果没有释义，尝试去百度汉语页面获取百科释义
+                    String baikeMeans = getBaikeMeansWithoutDefinition(baiduIdiom.getBasic_source_url().get(0));
+                    if (StringUtils.isBlank(baikeMeans)) {
+                        means = "暂无";
+                    } else {
+                        means = baikeMeans;
+                    }
+                } else if (means.length() > 1000) {
+                    means = means.substring(0, 997) + "...";
+                }
+                Idiom idiom = new Idiom();
+                idiom.setWord(word);
+                idiom.setPhoneticPinyin("[ " + phoneticPinyin + " ]");
+                idiom.setMeans(means);
+                try {
+                    gameService.addIdiom(idiom);
+                } catch (GbException ge) {
+                    log.warn("成语[{}]添加失败！{}", word, ge.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Baidu hanyu process page error！json:[{}]", json, e);
+        }
+    }
+
+    /**
+     * 在百度汉语页面获取百科释义
+     *
+     * @param hanyuUrl
+     * @return
+     */
+    private String getBaikeMeansWithoutDefinition(String hanyuUrl) {
+        try {
+            Document doc = Jsoup.connect(hanyuUrl).get();
+            String baikeMeans = doc.select("#baike-wrapper .tab-content p").text();
+            return baikeMeans.trim();
+        } catch (Exception e) {
+            log.error("Get baike means failed!", e);
+        }
+        return null;
+    }
 }
