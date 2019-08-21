@@ -1,11 +1,15 @@
 package com.ddpzp.xiaogu_word.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.ddpzp.xiaogu_word.common.Constants;
+import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.model.JsonResult;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
+import com.ddpzp.xiaogu_word.util.NlpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -102,5 +106,33 @@ public class GameController extends BaseController {
         String username = getUsername(session);
         log.info("Idiom,username={}", username);
         return "idiom";
+    }
+
+    @GetMapping("/idiomLoong")
+    public JsonResult idiomLoong(String queryWord, Integer wordIndex) {
+        if (StringUtils.isBlank(queryWord)) {
+            return JsonResult.error("你要我接啥？");
+        }
+        queryWord = queryWord.trim();
+        int wordLength = queryWord.length();
+        if (wordLength > 4 && !NlpUtil.isPinyin(queryWord)) {
+            return JsonResult.error("字太多，接不了！（输入4字成语，或者输入要接的字~）");
+        }
+        if (wordLength != 1 && wordLength != 4 && !NlpUtil.isPinyin(queryWord)) {
+            return JsonResult.error("接不了，接出来算我输！要么输4个字，要么输要接的字~");
+        }
+        String username = getUsername(session);
+        try {
+            Idiom idiom = gameService.idiomLoong(queryWord, wordIndex);
+            log.info("成语接龙，wordIndex=[{}],queryWord=[{}],next idiom=[{}],username={}",
+                    wordIndex, queryWord, idiom.getWord(), username);
+            return JsonResult.success(idiom);
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("Idiom loong error！username={}", username, e);
+            return JsonResult.error(e.getMessage());
+        }
     }
 }

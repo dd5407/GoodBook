@@ -12,6 +12,7 @@ import java.util.List;
  * Date 2019/8/19 0:04
  */
 public class NlpUtil {
+
     public static void setIdiomPinyin(Idiom idiom) throws Exception {
         if (idiom == null || StringUtils.isBlank(idiom.getWord())) {
             throw new Exception("成语为空");
@@ -21,5 +22,12 @@ public class NlpUtil {
         idiom.setSecondPinyin(pinyins.get(1).getPinyinWithoutTone());
         idiom.setThirdPinyin(pinyins.get(2).getPinyinWithoutTone());
         idiom.setFourthPinyin(pinyins.get(3).getPinyinWithoutTone());
+    }
+
+    public static boolean isPinyin(String word) {
+        if (StringUtils.isEmpty(word)) {
+            return false;
+        }
+        return word.matches("^[a-zA-Z]+$");
     }
 }

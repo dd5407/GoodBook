@@ -2,6 +2,8 @@ package com.ddpzp.xiaogu_word.mapper.game;
 
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 
+import java.util.List;
+
 /**
  * 成语mapper
  * Created by dd
@@ -25,14 +27,24 @@ public interface IdiomMapper {
 
     /**
      * 添加成语
+     *
      * @param idiom
      */
     void addIdiom(Idiom idiom);
 
     /**
      * 获取成语
+     *
      * @param word
      * @return
      */
     Idiom getIdiomByWord(String word);
+
+    /**
+     * 查询以queryWord开头的词
+     *
+     * @param queryWord
+     * @return
+     */
+    List<Idiom> idiomLoong(String queryWord);
 }

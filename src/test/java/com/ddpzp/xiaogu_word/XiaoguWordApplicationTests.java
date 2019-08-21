@@ -44,6 +44,18 @@ public class XiaoguWordApplicationTests {
     }
 
     @Test
+    public void idiomLoongTest() {
+        Idiom idiom = null;
+        try {
+            idiom = gameService.idiomLoong("目不转睛", 4);
+            System.out.println(idiom.getWord());
+        } catch (GbException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void contextLoads() {
     }
 

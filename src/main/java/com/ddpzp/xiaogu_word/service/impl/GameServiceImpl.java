@@ -9,6 +9,7 @@ import com.ddpzp.xiaogu_word.service.GameService;
 import com.ddpzp.xiaogu_word.util.IdiomCollection;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.dictionary.py.Pinyin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class GameServiceImpl implements GameService {
             throw new GbException("数据库中没有成语！");
         }
         //生成一个0到total-1的随机数
-        int randomIndex = (int) (Math.random() * (total));
+        int randomIndex = (int) (Math.random() * total);
         log.info("生成[0-{}]随机数：[{}]", total, randomIndex);
         return idiomMapper.getIdiomByIndex(randomIndex);
     }
@@ -99,20 +100,31 @@ public class GameServiceImpl implements GameService {
      * @return
      */
     @Override
-    public Idiom idiomLoong(String queryWord, Integer wordIndex) {
-        List<Idiom> idiomList;
+    public Idiom idiomLoong(String queryWord, Integer wordIndex) throws GbException {
+        String pinyin;
+        //输入的是要接的拼音
         if (NlpUtil.isPinyin(queryWord)) {
-            idiomList = idiomMapper.idiomLoong(queryWord);
-        } else if (queryWord.length() == 1) {
-            HanLP.convertToPinyinString(queryWord,"",false);
-        } else {
-
+            pinyin = queryWord;
+        } else if (queryWord.length() == 1) {//输入的是要接的字
+            pinyin = HanLP.convertToPinyinString(queryWord, "", false);
+        } else {//输入的是完整成语
+            if (wordIndex == null || wordIndex > 4 || wordIndex <= 1) {
+                throw new GbException(String.format("非法的序号[%s]，只能接第2-4字", wordIndex));
+            }
+            pinyin = HanLP.convertToPinyinList(queryWord).get(wordIndex - 1).getPinyinWithoutTone();
         }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        String 好 = HanLP.convertToPinyinString("好", "", false);
-        System.out.println(好);
+        List<Idiom> idiomList = idiomMapper.idiomLoong(pinyin);
+        if (idiomList.size() == 0) {
+            Idiom idiom = new Idiom();
+            idiom.setWord("接不出来");
+            idiom.setPhoneticPinyin("[ jiē bù chū lái ]");
+            idiom.setMeans("出的成语太过惊世骇俗，让本系统无能为力时，显示的内容~");
+            return idiom;
+        }
+        //产生0到size-1的序号
+        int randomIndex = (int) (Math.random() * idiomList.size());
+        //随机返回一个成语
+        //todo 后期进行成语难度评级，按难度加权重进行随机，难度低的随机出现次数高，或者支持前台选择难度
+        return idiomList.get(randomIndex);
     }
 }

@@ -1,5 +1,6 @@
 package com.ddpzp.xiaogu_word.service;
 
+import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 
@@ -37,4 +38,13 @@ public interface GameService {
      * @param idiom
      */
     void addIdiom(Idiom idiom) throws Exception;
+
+    /**
+     * 成语接龙
+     *
+     * @param queryWord 要接的成语，可以是完整成语，也可以是要接的字或该字的拼音
+     * @param wordIndex 接第几个字
+     * @return
+     */
+    Idiom idiomLoong(String queryWord, Integer wordIndex) throws GbException;
 }

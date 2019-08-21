@@ -26,4 +26,8 @@
     <select id="getIdiomByWord" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
         select * from idiom where word=#{word} limit 1
     </select>
+
+    <select id="idiomLoong" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
+        select * from idiom where first_pinyin=#{queryWord}
+    </select>
 </mapper>
