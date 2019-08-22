@@ -16,6 +16,9 @@
     <script type="text/javascript" th:src="@{/js/game/idiom.js}"></script>
 </head>
 <body>
+<div class="page-header">
+    <h1 align="center"><small>成语</small></h1>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -24,23 +27,25 @@
             </p>
         </div>
     </div>
-    <div class="row" hidden="hidden">
-        <div class="col-lg-12 col-xs-12">
-            <p>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col-lg-2 col-xs-4">
             <div class="seach_input">
-                <button id="idiomLinkBtn" class="btn btn-success">成语接龙</button>
+                <button id="idiomLoongBtn" class="btn btn-success" style="margin-top: 15px;">成语接龙</button>
+            </div>
+        </div>
+        <div class="col-lg-5 col-xs-6">
+            <span id="notice" class="glyphicon glyphicon-question-sign" style="float: left;cursor:pointer;"></span>
+            <div class="search_input">
+                <input name="queryWord" type="text" class="form-control" placeholder="请输入要接的字或拼音"/>
             </div>
             <div class="search_input">
-                <input type="text" class="form-control" placeholder="请输入要接的字或拼音">
-            </div>
-            <div class="search_input">
-                <select id="idiomIndex" class="form-control">
+                <select id="idiomIndex" class="form-control" style="display: none">
                     <option value="2">接第2个字</option>
                     <option value="3">接第3个字</option>
                     <option value="4" selected>接第4个字</option>
                 </select>
             </div>
-            </p>
         </div>
     </div>
 </div>

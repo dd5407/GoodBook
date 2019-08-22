@@ -30,4 +30,18 @@ public class NlpUtil {
         }
         return word.matches("^[a-zA-Z]+$");
     }
+
+    public static boolean isFourIdiom(String word) {
+        if (StringUtils.isEmpty(word)) {
+            return false;
+        }
+        return word.matches("[\\u4e00-\\u9fa5]{4}");
+    }
+
+    public static boolean isChinese(String word) {
+        if (StringUtils.isEmpty(word)) {
+            return false;
+        }
+        return word.matches("[\\u4e00-\\u9fa5]+");
+    }
 }

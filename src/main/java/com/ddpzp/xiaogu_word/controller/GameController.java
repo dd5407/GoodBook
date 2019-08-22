@@ -109,16 +109,19 @@ public class GameController extends BaseController {
     }
 
     @GetMapping("/idiomLoong")
+    @ResponseBody
     public JsonResult idiomLoong(String queryWord, Integer wordIndex) {
         if (StringUtils.isBlank(queryWord)) {
             return JsonResult.error("你要我接啥？");
         }
         queryWord = queryWord.trim();
         int wordLength = queryWord.length();
-        if (wordLength > 4 && !NlpUtil.isPinyin(queryWord)) {
+        if (wordLength > 4 && NlpUtil.isChinese(queryWord)) {
+            log.warn("Invalid query word，queryWord=[{}]");
             return JsonResult.error("字太多，接不了！（输入4字成语，或者输入要接的字~）");
         }
-        if (wordLength != 1 && wordLength != 4 && !NlpUtil.isPinyin(queryWord)) {
+        if (wordLength != 1 && wordLength != 4 && NlpUtil.isChinese(queryWord)) {
+            log.warn("Invalid query word，queryWord=[{}]");
             return JsonResult.error("接不了，接出来算我输！要么输4个字，要么输要接的字~");
         }
         String username = getUsername(session);

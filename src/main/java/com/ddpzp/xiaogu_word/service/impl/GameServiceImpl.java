@@ -116,13 +116,15 @@ public class GameServiceImpl implements GameService {
         //输入的是要接的拼音
         if (NlpUtil.isPinyin(queryWord)) {
             pinyin = queryWord;
-        } else if (queryWord.length() == 1) {//输入的是要接的字
+        } else if (queryWord.length() == 1 && NlpUtil.isChinese(queryWord)) {//输入的是要接的字
             pinyin = HanLP.convertToPinyinString(queryWord, "", false);
-        } else {//输入的是完整成语
+        } else if (NlpUtil.isFourIdiom(queryWord)) {//输入的是完整成语
             if (wordIndex == null || wordIndex > 4 || wordIndex <= 1) {
                 throw new GbException(String.format("非法的序号[%s]，只能接第2-4字", wordIndex));
             }
             pinyin = HanLP.convertToPinyinList(queryWord).get(wordIndex - 1).getPinyinWithoutTone();
+        } else {
+            throw new GbException(String.format("[%s]什么鬼，看不懂！", queryWord));
         }
         List<Idiom> idiomList = idiomMapper.idiomLoong(pinyin);
         if (idiomList.size() == 0) {
