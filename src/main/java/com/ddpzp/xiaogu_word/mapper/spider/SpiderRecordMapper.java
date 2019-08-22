@@ -10,10 +10,10 @@ public interface SpiderRecordMapper {
     /**
      * 获取最新一条记录
      *
-     * @param spiderRecordTypeIdiom
+     * @param recordType
      * @return
      */
-    SpiderRecord getLatestRecord(String spiderRecordTypeIdiom);
+    SpiderRecord getLatestRecord(String recordType);
 
     /**
      * 新增爬虫记录

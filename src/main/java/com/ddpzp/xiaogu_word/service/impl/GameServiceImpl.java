@@ -65,7 +65,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void initIdiomData() {
         //判断是否需要启动爬虫
-        if (checkSpiderRecord()) {
+        if (!needStartSpider()) {
             return;
         }
         //百度爬虫
@@ -159,7 +159,7 @@ public class GameServiceImpl implements GameService {
      *
      * @return
      */
-    private boolean checkSpiderRecord() {
+    private boolean needStartSpider() {
         try {
             SpiderRecord spiderRecord = spiderRecordMapper.getLatestRecord(Constants.SPIDER_RECORD_TYPE_IDIOM);
             if (spiderRecord != null) {
@@ -167,13 +167,13 @@ public class GameServiceImpl implements GameService {
                 Integer idiomCount = idiomMapper.countIdiom();
                 //当前记录数>=上次的记录，说明记录没丢失，不用重爬
                 if (idiomCount >= lastCount) {
-                    log.info("Last record num=[{}], current record num=[{}], no need start idiom spider!");
-                    return true;
+                    log.info("Last record num=[{}], current record num=[{}], no need start idiom spider!", lastCount, idiomCount);
+                    return false;
                 }
             }
         } catch (Exception e) {
             log.error("Check spider record error！Continue to start spider...");
         }
-        return false;
+        return true;
     }
 }
