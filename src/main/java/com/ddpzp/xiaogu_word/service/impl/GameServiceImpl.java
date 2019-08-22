@@ -1,8 +1,11 @@
 package com.ddpzp.xiaogu_word.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.mapper.game.IdiomMapper;
+import com.ddpzp.xiaogu_word.mapper.spider.SpiderRecordMapper;
+import com.ddpzp.xiaogu_word.po.SpiderRecord;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
@@ -29,6 +32,8 @@ public class GameServiceImpl implements GameService {
     private IdiomMapper idiomMapper;
     @Autowired
     private IdiomCollection idiomCollection;
+    @Autowired
+    private SpiderRecordMapper spiderRecordMapper;
 
     @Override
     public List<Frog> countFrog(Integer startNum, Integer size) {
@@ -59,10 +64,16 @@ public class GameServiceImpl implements GameService {
      */
     @Override
     public void initIdiomData() {
+        //判断是否需要启动爬虫
+        if (checkSpiderRecord()) {
+            return;
+        }
         //百度爬虫
         idiomCollection.baiduParser();
         //百度汉语爬虫
         idiomCollection.hanyuIdiomSpider();
+        //新增爬虫记录
+        addSpiderRecord();
     }
 
     /**
@@ -126,5 +137,43 @@ public class GameServiceImpl implements GameService {
         //随机返回一个成语
         //todo 后期进行成语难度评级，按难度加权重进行随机，难度低的随机出现次数高，或者支持前台选择难度
         return idiomList.get(randomIndex);
+    }
+
+    /**
+     * 新增爬虫记录
+     */
+    private void addSpiderRecord() {
+        try {
+            Integer IdiomCount = idiomMapper.countIdiom();
+            SpiderRecord record = new SpiderRecord();
+            record.setRecordNum(IdiomCount);
+            record.setRecordType(Constants.SPIDER_RECORD_TYPE_IDIOM);
+            spiderRecordMapper.addRecord(record);
+        } catch (Exception e) {
+            log.error("Add spider record failed!", e);
+        }
+    }
+
+    /**
+     * 检查爬虫记录，决定是否需要启动爬虫
+     *
+     * @return
+     */
+    private boolean checkSpiderRecord() {
+        try {
+            SpiderRecord spiderRecord = spiderRecordMapper.getLatestRecord(Constants.SPIDER_RECORD_TYPE_IDIOM);
+            if (spiderRecord != null) {
+                Integer lastCount = spiderRecord.getRecordNum();
+                Integer idiomCount = idiomMapper.countIdiom();
+                //当前记录数>=上次的记录，说明记录没丢失，不用重爬
+                if (idiomCount >= lastCount) {
+                    log.info("Last record num=[{}], current record num=[{}], no need start idiom spider!");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            log.error("Check spider record error！Continue to start spider...");
+        }
+        return false;
     }
 }
