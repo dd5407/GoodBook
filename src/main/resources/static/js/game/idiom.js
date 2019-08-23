@@ -55,17 +55,22 @@ function setIdiomOnPanel(idiom) {
     //清空面板
     $('#idiomPanelBody').empty();
 
-    var html = "<p style='text-align: center;'>"
+    var html = "<p class='coreMsg' style='text-align: center;'>"
         + idiom.phoneticPinyin
         + "</p>"
-        + "<p style='text-align: center;'>"
+        + "<p class='coreMsg' style='text-align: center;'>"
         + idiom.word
         + "</p>"
-        + "<p style='text-align: center;'>"
+        + "<p class='coreMsg' style='text-align: center;'>"
         + "【释义】：" + idiom.means
         + "</p>";
     //将成语写入面板
     $('#idiomPanelBody').append(html);
+}
+
+function changeHideStatus() {
+    //切换显示、隐藏
+    $('.coreMsg').fadeToggle();
 }
 
 var methods = {
