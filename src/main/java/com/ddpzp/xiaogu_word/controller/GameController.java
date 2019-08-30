@@ -217,7 +217,7 @@ public class GameController extends BaseController {
             jsonObject.put("data", list);
             jsonObject.put("total", total);
             jsonObject.put("loginUser", username);
-            log.info("Get guess idiom list success! page={},pageSize={},total={},username",
+            log.info("Get guess idiom list success! page={},pageSize={},total={},username={}",
                     page, pageSize, total, username);
             return JsonResult.success(jsonObject);
         } catch (Exception e) {
