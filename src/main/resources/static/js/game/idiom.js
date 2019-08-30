@@ -167,13 +167,13 @@ function showGuessIdiomList(guessIdiomList, loginUser) {
         if (loginUser == fromUsername) {
             html = html + "<tr>"
                 + "<td hidden='hidden'>" + id + "</td>"
-                + "<td>" + index + "</td>"
+                + "<td class='hidden-xs'>" + index + "</td>"
                 + "<td>" + word + "</td>"
                 + "<td style='white-space: nowrap;text-overflow: ellipsis;overflow: hidden;' onclick='showFullMeans(this)'>" + means + "</td>"
                 + "<td>" + fromUsername + "</td>"
                 + "<td>" + toUsername + "</td>"
                 + "<td>" + idiomStatus + "</td>"
-                + "<td>" + createTime + "</td>"
+                + "<td class='hidden-xs'>" + createTime + "</td>"
                 + "<td><button class='btn btn-default' onclick='getGuessIdiomDetail(" + id + ")'>查看</button>"
                 + "<button class='btn btn-danger' onclick='deleteGuessIdiom(" + id + ")'>删除</button> </td>"
                 + "</tr>";
@@ -182,25 +182,25 @@ function showGuessIdiomList(guessIdiomList, loginUser) {
             if (guessItem.idiomStatus == 0) {
                 html = html + "<tr>"
                     + "<td hidden='hidden'>" + id + "</td>"
-                    + "<td>" + index + "</td>"
+                    + "<td class='hidden-xs'>" + index + "</td>"
                     + "<td>【待猜】</td>"
                     + "<td style='white-space: nowrap;text-overflow: ellipsis;overflow: hidden;' onclick='showFullMeans(this)'>" + means + "</td>"
                     + "<td>" + fromUsername + "</td>"
                     + "<td>" + toUsername + "</td>"
                     + "<td>" + idiomStatus + "</td>"
-                    + "<td>" + createTime + "</td>"
+                    + "<td class='hidden-xs'>" + createTime + "</td>"
                     + "<td><button class='btn btn-info' onclick='toGuessIdiom(" + JSON.stringify(guessItem).replace(/"/g, '&quot;') + ")'>答题</button></td>"
                     + "</tr>";
             } else {
                 html = html + "<tr>"
                     + "<td hidden='hidden'>" + id + "</td>"
-                    + "<td>" + index + "</td>"
+                    + "<td class='hidden-xs'>" + index + "</td>"
                     + "<td>" + word + "</td>"
                     + "<td style='white-space: nowrap;text-overflow: ellipsis;overflow: hidden;' onclick='showFullMeans(this)'>" + means + "</td>"
                     + "<td>" + fromUsername + "</td>"
                     + "<td>" + toUsername + "</td>"
                     + "<td>" + idiomStatus + "</td>"
-                    + "<td>" + createTime + "</td>"
+                    + "<td class='hidden-xs'>" + createTime + "</td>"
                     + "<td><button class='btn btn-default' onclick='getGuessIdiomDetail(" + id + ")'>查看</button></td>"
                     + "</tr>";
             }
