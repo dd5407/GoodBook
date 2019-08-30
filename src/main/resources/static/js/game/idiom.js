@@ -270,6 +270,8 @@ function showGuessDetail(guessIdiom) {
 }
 
 function toGuessIdiom(guessItem) {
+    //先隐藏模态框，不然会冲突，导致confirm里的input无法输入
+    $('#idiomListModal').modal('hide');
     var id = guessItem.id;
     var means = guessItem.means;
     var createTime = guessItem.createTime;
