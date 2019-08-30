@@ -189,7 +189,7 @@ public class GameServiceImpl implements GameService {
         if (!StringUtils.equals(idiom, word)) {
             updateGuessCount(word, false);
             log.warn("Missing guess idiom! guess idiom:[{}],answer:[{}]", idiom, word);
-            throw new GbException(String.format("啊哦，答错了！不是[{}]", idiom));
+            throw new GbException(String.format("啊哦，答错了！不是[%s]", idiom));
         }
         //答对
         updateGuessCount(word, true);
@@ -261,10 +261,10 @@ public class GameServiceImpl implements GameService {
         if (guessIdiom == null) {
             throw new GbException("题目不存在，请刷新页面后再试！");
         }
-        if(!StringUtils.equals(loginUser,guessIdiom.getToUsername())){
+        if (!StringUtils.equals(loginUser, guessIdiom.getToUsername())) {
             throw new GbException("题目貌似不是给你答的？");
         }
-        guessIdiomMapper.abandonGuessIdiom(id);
+        guessIdiomMapper.updateStatus(id, Constants.GUESS_IDIOM_ABANDON);
     }
 
     /**

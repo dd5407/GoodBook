@@ -13,7 +13,10 @@ public class Constants {
     public static final String SPIDER_RECORD_TYPE_IDIOM = "idiom";
 
     /* 猜成语 */
+    //未猜
     public static final int GUESS_IDIOM_CREATED = 0;
+    //猜中
     public static final int GUESS_IDIOM_PASS = 1;
-    public static final int GUESS_IDIOM_MISS = 2;
+    //放弃
+    public static final int GUESS_IDIOM_ABANDON = 2;
 }

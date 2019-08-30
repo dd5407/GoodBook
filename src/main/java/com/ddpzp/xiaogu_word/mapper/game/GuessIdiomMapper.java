@@ -64,10 +64,4 @@ public interface GuessIdiomMapper {
      */
     void deleteGuessIdiom(Integer id);
 
-    /**
-     * 放弃猜成语题目
-     *
-     * @param id
-     */
-    void abandonGuessIdiom(Integer id);
 }

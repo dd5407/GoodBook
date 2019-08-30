@@ -10,7 +10,7 @@
         select * from guess_idiom where id=#{id}
     </select>
     <update id="updateStatus">
-        update guess_idiom set status=#{status}
+        update guess_idiom set idiom_status=#{status}
         where id=#{id}
     </update>
     <select id="getGuessIdiomList" resultType="com.ddpzp.xiaogu_word.po.game.GuessIdiom">
@@ -33,7 +33,4 @@
     <delete id="deleteGuessIdiom">
         delete from guess_idiom where id=#{id}
     </delete>
-    <update id="abandonGuessIdiom">
-        update guess_idiom set idiom_status=2 where id=#{id}
-    </update>
 </mapper>
