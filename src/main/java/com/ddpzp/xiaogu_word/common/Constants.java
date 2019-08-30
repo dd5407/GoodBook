@@ -11,4 +11,9 @@ public class Constants {
     /* 爬虫类型 */
     //成语
     public static final String SPIDER_RECORD_TYPE_IDIOM = "idiom";
+
+    /* 猜成语 */
+    public static final int GUESS_IDIOM_CREATED = 0;
+    public static final int GUESS_IDIOM_PASS = 1;
+    public static final int GUESS_IDIOM_MISS = 2;
 }

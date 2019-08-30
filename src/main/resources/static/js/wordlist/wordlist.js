@@ -92,9 +92,7 @@ $(function () {
                 title: "大佬",
                 content: "至少选一个呗！",
                 buttons: {
-                    好: function () {
-
-                    }
+                    好: {}
                 }
             });
             return;
@@ -108,9 +106,7 @@ $(function () {
                     toastr.success("Let them go...");
                     methods.batchDelete(ids);
                 },
-                取消: function () {
-                    return;
-                }
+                取消: {}
             }
         })
     });
@@ -172,9 +168,7 @@ function deleteModal(ele) {
             确定: function () {
                 methods.deleteWord(word);
             },
-            取消: function () {
-                return;
-            }
+            取消: {}
         }
     });
 }
@@ -226,9 +220,9 @@ var methods = {
                 methods.showWordList(total, wordList);
                 //todo 刷新分页
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
                 toastr.error(textStatus);
-                toastr.error(errorThrown);
             }
         });
     },
@@ -249,13 +243,10 @@ var methods = {
                     toastr.error("添加失败！" + jsonResult.msg);
                 }
             },
-            error: function (jqXHR) {
-                var error = jqXHR.responseJSON.error;
-                var errmsg = jqXHR.responseJSON.message;
-                console.log(error);
-                console.log(errmsg);
-                toastr.error("系统错误！" + error + " " + errmsg);
-            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
+                toastr.error(textStatus);
+            }
         });
         //隐藏模态框
         $('#word').modal('hide');
@@ -277,12 +268,9 @@ var methods = {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                var error = jqXHR.responseJSON.error;
-                var errmsg = jqXHR.responseJSON.message;
-                console.log(error);
-                console.log(errmsg);
-                toastr.error("系统错误！" + error + " " + errmsg);
-            },
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
+                toastr.error(textStatus);
+            }
         });
         //隐藏模态框
         $('#word').modal('hide');
@@ -305,7 +293,8 @@ var methods = {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("系统错误！" + textStatus + " " + errorThrown);
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
+                toastr.error(textStatus);
             }
         })
     },
@@ -329,7 +318,8 @@ var methods = {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                toastr.error("系统错误！" + textStatus + " " + errorThrown);
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
+                toastr.error(textStatus);
             }
         })
     }

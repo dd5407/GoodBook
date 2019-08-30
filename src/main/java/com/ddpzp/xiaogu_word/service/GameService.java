@@ -2,6 +2,7 @@ package com.ddpzp.xiaogu_word.service;
 
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.po.game.Frog;
+import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 
 import java.util.List;
@@ -47,4 +48,64 @@ public interface GameService {
      * @return
      */
     Idiom idiomLoong(String queryWord, Integer wordIndex) throws GbException;
+
+    /**
+     * 猜成语-发送
+     *
+     * @param fromUsername
+     * @param toUsername   对方用户名
+     * @param guessIdiom   要给对方猜的成语
+     */
+    void sendIdiom(String fromUsername, String toUsername, String guessIdiom) throws GbException;
+
+    /**
+     * 猜成语
+     *
+     * @param id
+     * @param idiom
+     * @param username
+     */
+    void guessIdiom(Integer id, String idiom, String username) throws GbException;
+
+    /**
+     * 获取猜成语列表
+     *
+     * @param page
+     * @param pageSize
+     * @param username
+     * @return
+     */
+    List<GuessIdiom> getGuessIdiomList(Integer page, Integer pageSize, String username);
+
+    /**
+     * 获取猜成语列表总数
+     *
+     * @param username
+     * @return
+     */
+    Integer countGuessIdiom(String username);
+
+    /**
+     * 删除猜成语题目，只能删除自己出的题
+     *
+     * @param id
+     * @param loginUser
+     */
+    void deleteGuessIdiom(Integer id, String loginUser) throws GbException;
+
+    /**
+     * 获取猜成语题目详情
+     *
+     * @param id
+     * @return
+     */
+    GuessIdiom getGuessIdiomDetail(Integer id);
+
+    /**
+     * 放弃猜成语题目
+     *
+     * @param id
+     * @param loginUser
+     */
+    void abandonGuessIdiom(Integer id, String loginUser) throws GbException;
 }

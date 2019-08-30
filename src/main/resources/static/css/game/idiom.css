@@ -8,3 +8,7 @@
 #idiomPanel {
     margin-top: 50px;
 }
+
+#guessListTable {
+    table-layout: fixed;
+}

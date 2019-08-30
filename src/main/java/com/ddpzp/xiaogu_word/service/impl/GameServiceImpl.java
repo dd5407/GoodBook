@@ -1,18 +1,18 @@
 package com.ddpzp.xiaogu_word.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.exception.GbException;
+import com.ddpzp.xiaogu_word.mapper.game.GuessIdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.game.IdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.spider.SpiderRecordMapper;
 import com.ddpzp.xiaogu_word.po.SpiderRecord;
 import com.ddpzp.xiaogu_word.po.game.Frog;
+import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.ddpzp.xiaogu_word.util.IdiomCollection;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
 import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.dictionary.py.Pinyin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,8 @@ public class GameServiceImpl implements GameService {
     private IdiomCollection idiomCollection;
     @Autowired
     private SpiderRecordMapper spiderRecordMapper;
+    @Autowired
+    private GuessIdiomMapper guessIdiomMapper;
 
     @Override
     public List<Frog> countFrog(Integer startNum, Integer size) {
@@ -139,6 +141,162 @@ public class GameServiceImpl implements GameService {
         //随机返回一个成语
         //todo 后期进行成语难度评级，按难度加权重进行随机，难度低的随机出现次数高，或者支持前台选择难度
         return idiomList.get(randomIndex);
+    }
+
+    /**
+     * 猜成语-发送
+     *
+     * @param fromUsername
+     * @param toUsername   对方用户名
+     * @param guessIdiom   要给对方猜的成语
+     */
+    @Override
+    public void sendIdiom(String fromUsername, String toUsername, String guessIdiom) throws GbException {
+        Idiom idiom = idiomMapper.getIdiomByWord(guessIdiom);
+        if (StringUtils.equals(fromUsername, toUsername)) {
+            log.warn("Funny! fromUsername [{}] is equals toUsername", fromUsername);
+            throw new GbException("自己给自己猜？有意思...不给猜！");
+        }
+        if (idiom == null) {
+            log.warn("Idiom [{}] is not exist in database!", guessIdiom);
+            throw new GbException(String.format("成语[%s]不存在，请重新输入！", guessIdiom));
+        }
+        guessIdiomMapper.sendIdiom(idiom.getWord(), idiom.getMeans(), fromUsername, toUsername);
+    }
+
+    /**
+     * 猜成语
+     *
+     * @param id
+     * @param idiom
+     * @param username
+     */
+    @Override
+    public void guessIdiom(Integer id, String idiom, String username) throws GbException {
+        GuessIdiom guessIdiom = guessIdiomMapper.getGuessIdiom(id);
+        if (guessIdiom == null) {
+            log.error("Guess idiom is not exist! id={},idiom={},username={}", id, idiom, username);
+            throw new GbException("系统错误！题目不存在，请刷新页面后再看！");
+        }
+        //检查当前用户是不是答题者
+        if (!StringUtils.equals(username, guessIdiom.getToUsername())) {
+            log.error("Current user [{}] is not toUser [{}]", username, guessIdiom.getToUsername());
+            throw new GbException("系统错误，这道题好像不是你的哦？！");
+        }
+
+        String word = guessIdiom.getWord();
+        //答错
+        if (!StringUtils.equals(idiom, word)) {
+            updateGuessCount(word, false);
+            log.warn("Missing guess idiom! guess idiom:[{}],answer:[{}]", idiom, word);
+            throw new GbException(String.format("啊哦，答错了！不是[{}]", idiom));
+        }
+        //答对
+        updateGuessCount(word, true);
+        guessIdiomMapper.updateStatus(id, Constants.GUESS_IDIOM_PASS);
+    }
+
+    /**
+     * 获取猜成语列表
+     *
+     * @param page
+     * @param pageSize
+     * @param username
+     * @return
+     */
+    @Override
+    public List<GuessIdiom> getGuessIdiomList(Integer page, Integer pageSize, String username) {
+        return guessIdiomMapper.getGuessIdiomList((page - 1) * pageSize, pageSize, username);
+    }
+
+    /**
+     * 获取猜成语列表总数
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public Integer countGuessIdiom(String username) {
+        return guessIdiomMapper.countGuessIdiom(username);
+    }
+
+    /**
+     * 删除猜成语题目，只能删除自己出的题
+     *
+     * @param id
+     * @param loginUser
+     */
+    @Override
+    public void deleteGuessIdiom(Integer id, String loginUser) throws GbException {
+        GuessIdiom guessIdiom = guessIdiomMapper.getGuessIdiom(id);
+        if (guessIdiom == null) {
+            throw new GbException("题目不存在，请刷新页面后再试！");
+        }
+        if (!StringUtils.equals(loginUser, guessIdiom.getFromUsername())) {
+            throw new GbException("题目不是你出的，删不了，不好意思！");
+        }
+        guessIdiomMapper.deleteGuessIdiom(id);
+    }
+
+    /**
+     * 获取猜成语题目详情
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public GuessIdiom getGuessIdiomDetail(Integer id) {
+        return guessIdiomMapper.getGuessIdiom(id);
+    }
+
+    /**
+     * 放弃猜成语题目
+     *
+     * @param id
+     * @param loginUser
+     */
+    @Override
+    public void abandonGuessIdiom(Integer id, String loginUser) throws GbException {
+        GuessIdiom guessIdiom = guessIdiomMapper.getGuessIdiom(id);
+        if (guessIdiom == null) {
+            throw new GbException("题目不存在，请刷新页面后再试！");
+        }
+        if(!StringUtils.equals(loginUser,guessIdiom.getToUsername())){
+            throw new GbException("题目貌似不是给你答的？");
+        }
+        guessIdiomMapper.abandonGuessIdiom(id);
+    }
+
+    /**
+     * 根据猜的结果，更新统计信息
+     *
+     * @param word
+     * @param isBingo
+     */
+    private void updateGuessCount(String word, boolean isBingo) {
+        try {
+            Idiom idiom = idiomMapper.getIdiomByWord(word);
+            if (idiom == null) {
+                return;
+            }
+            Integer passCount = idiom.getPassCount();
+            Integer missCount = idiom.getMissCount();
+            if (isBingo) {
+                passCount++;
+            } else {
+                missCount++;
+            }
+
+            //计算难度系数分数
+            double score = (double) missCount / (double) (missCount + passCount);
+            idiom.setPassCount(passCount);
+            idiom.setScore(score);
+            idiomMapper.updateGuessCount(idiom);
+            log.info("Update guess count success! bingo={},passCount={},missCount={},score={}",
+                    isBingo, passCount, missCount, score);
+        } catch (Exception e) {
+            log.error("Update guess count failed！", e);
+        }
     }
 
     /**

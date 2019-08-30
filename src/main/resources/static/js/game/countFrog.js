@@ -73,8 +73,8 @@ function queryFrog(params) {
             $('#frogList').append(html);
         },
         error: function (jqXHR, textStatus, errorThrown) {
+            toastr.error(jqXHR.status + ":" + jqXHR.statusText);
             toastr.error(textStatus);
-            toastr.error(errorThrown);
         }
     })
 }

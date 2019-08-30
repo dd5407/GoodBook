@@ -12,14 +12,14 @@
         (word,means,
         phonetic_pinyin,first_pinyin,
         second_pinyin,third_pinyin,
-        fourth_pinyin,level,
+        fourth_pinyin,score,
         pass_count,miss_count,
         create_time
         ) values (
         #{word},#{means},
         #{phoneticPinyin},#{firstPinyin},
         #{secondPinyin},#{thirdPinyin},
-        #{fourthPinyin},#{level},
+        #{fourthPinyin},#{score},
         #{passCount},#{missCount},
         CURRENT_TIMESTAMP)
     </insert>
@@ -30,4 +30,5 @@
     <select id="idiomLoong" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
         select * from idiom where first_pinyin=#{queryWord}
     </select>
+
 </mapper>

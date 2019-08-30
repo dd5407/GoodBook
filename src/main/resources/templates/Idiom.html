@@ -13,38 +13,54 @@
     <script type="text/javascript" th:src="@{/js/common/bootstrap.js}"></script>
     <script type="text/javascript" th:src="@{/js/common/toastr.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/common/jquery-confirm.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/bootstrap-paginator.js}"></script>
     <script type="text/javascript" th:src="@{/js/game/idiom.js}"></script>
 </head>
 <body>
 <div class="page-header">
-    <h1 align="center"><small>成语</small></h1>
+    <h1 align="center">
+        <small>成语</small>
+    </h1>
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-lg-12 col-xs-12">
-            <p>
-                <button id="randomIdiomBtn" class="btn btn-primary">转屏猜成语</button>
-            </p>
+        <div class="col-md-2 col-xs-4">
+            <button id="randomIdiomBtn" class="btn btn-primary">转屏猜成语</button>
+        </div>
+        <div class="col-md-2 col-xs-4 col-md-offset-1">
+            <button class="btn btn-primary" onclick="addModal()">给别人猜</button>
+        </div>
+        <div class="col-md-2 col-xs-4 col-md-offset-4">
+            <button class="btn btn-default" type="button" onclick="getGuessIdiomList(1,10)">
+                猜成语列表 <span class="badge"></span>
+            </button>
         </div>
     </div>
     <div class="divider"></div>
     <div class="row">
-        <div class="col-lg-2 col-xs-4">
+        <div class="col-md-2 col-xs-3">
             <div class="seach_input">
                 <button id="idiomLoongBtn" class="btn btn-success" style="margin-top: 15px;">成语接龙</button>
             </div>
         </div>
-        <div class="col-lg-5 col-xs-6">
-            <span id="notice" class="glyphicon glyphicon-question-sign" style="float: left;cursor:pointer;"></span>
-            <div class="search_input">
-                <input name="queryWord" type="text" class="form-control" placeholder="请输入要接的字或拼音"/>
+        <div class="col-md-6 col-xs-9">
+            <div class="col-md-1 col-xs-1">
+                <span id="notice" class="glyphicon glyphicon-question-sign"
+                      style="margin-top:25px;cursor:pointer;"></span>
             </div>
-            <div class="search_input">
-                <select id="idiomIndex" class="form-control" style="display: none">
-                    <option value="2">接第2个字</option>
-                    <option value="3">接第3个字</option>
-                    <option value="4" selected>接第4个字</option>
-                </select>
+            <div class="col-md-6 col-xs-10">
+                <div class="search_input">
+                    <input name="queryWord" type="text" class="form-control" placeholder="请输入要接的字或拼音"/>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-8">
+                <div class="search_input">
+                    <select id="idiomIndex" class="form-control" style="display: none">
+                        <option value="2">接第2个字</option>
+                        <option value="3">接第3个字</option>
+                        <option value="4" selected>接第4个字</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -54,7 +70,8 @@
         <div class="col-lg-12 col-xs-12">
             <div id="idiomPanel" class="panel panel-success" hidden="hidden">
                 <div class="panel-heading">
-                    <h3 id="idiomPanelTitle" class="panel-title" style="cursor: pointer" onclick="changeHideStatus()"></h3>
+                    <h3 id="idiomPanelTitle" class="panel-title" style="cursor: pointer"
+                        onclick="changeHideStatus()"></h3>
                 </div>
                 <div id="idiomPanelBody" class="panel-body">
 
@@ -63,6 +80,79 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="sendIdiomModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">给别人猜</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-xs-2 col-xs-offset-1">用户名</label>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="toUsername" type="text"
+                                   placeholder="输入对方的用户名"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-2 col-xs-offset-1">成语</label>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" name="guessIdiom"
+                                   placeholder="想要对方猜的成语"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="sendIdiom()">发送</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="idiomListModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">猜成语</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="guessListTable">
+                        <thead>
+                        <tr>
+                            <th hidden="hidden">id</th>
+                            <th>序号</th>
+                            <th>成语</th>
+                            <th>释义</th>
+                            <th>出题者</th>
+                            <th>答题者</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <!--分页组件-->
+                <div class="page">
+                    <ul class="pagination">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 </body>
 </html>

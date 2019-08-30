@@ -47,4 +47,11 @@ public interface IdiomMapper {
      * @return
      */
     List<Idiom> idiomLoong(String queryWord);
+
+    /**
+     * 更新猜成语统计信息
+     *
+     * @param idiom
+     */
+    void updateGuessCount(Idiom idiom);
 }

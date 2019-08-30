@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.game.GuessIdiomMapper">
+    <insert id="sendIdiom">
+        insert into guess_idiom
+        (word,means,from_username,to_username,idiom_status) values
+        (#{word},#{means},#{fromUsername},#{toUsername},0)
+    </insert>
+    <select id="getGuessIdiom" resultType="com.ddpzp.xiaogu_word.po.game.GuessIdiom">
+        select * from guess_idiom where id=#{id}
+    </select>
+    <update id="updateStatus">
+        update guess_idiom set status=#{status}
+        where id=#{id}
+    </update>
+    <select id="getGuessIdiomList" resultType="com.ddpzp.xiaogu_word.po.game.GuessIdiom">
+        select * from guess_idiom
+        <where>
+            <if test="username!=null and username!=''">
+                from_username=#{username} or to_username=#{username}
+            </if>
+        </where>
+        limit #{startNum},#{pageSize}
+    </select>
+    <select id="countGuessIdiom" resultType="java.lang.Integer">
+        select count(*) from guess_idiom
+        <where>
+            <if test="username!=null and username!=''">
+                from_username=#{username} or to_username=#{username}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteGuessIdiom">
+        delete from guess_idiom where id=#{id}
+    </delete>
+    <update id="abandonGuessIdiom">
+        update guess_idiom set idiom_status=2 where id=#{id}
+    </update>
+</mapper>

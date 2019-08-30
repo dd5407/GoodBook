@@ -1,10 +1,12 @@
 package com.ddpzp.xiaogu_word.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.model.JsonResult;
 import com.ddpzp.xiaogu_word.po.game.Frog;
+import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
@@ -13,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -135,6 +134,168 @@ public class GameController extends BaseController {
             return JsonResult.error(ge.getMessage());
         } catch (Exception e) {
             log.error("Idiom loong error！username={}", username, e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 提交猜成语题目
+     *
+     * @param toUsername
+     * @param guessIdiom
+     * @return
+     */
+    @PostMapping("/sendIdiom")
+    @ResponseBody
+    public JsonResult sendIdiom(String toUsername, String guessIdiom) {
+        if (StringUtils.isBlank(toUsername)) {
+            log.warn("Param toUsername is empty！");
+            return JsonResult.error("用户名不能为空！");
+        }
+        if (StringUtils.isBlank(guessIdiom)) {
+            log.warn("Param guessIdiom is empty!");
+            return JsonResult.error("成语不能为空！");
+        }
+        try {
+            gameService.sendIdiom(getUsername(session), toUsername.trim(), guessIdiom.trim());
+            return JsonResult.success();
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("Send idiom error!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 猜成语，答题者猜
+     *
+     * @param id
+     * @param idiom
+     * @return
+     */
+    @PostMapping("/guessIdiom")
+    @ResponseBody
+    public JsonResult guessIdiom(Integer id, String idiom) {
+        if (id == null) {
+            log.error("Param id is null!");
+            return JsonResult.error("系统错误！id为空，请刷新页面后再试！");
+        }
+        if (StringUtils.isBlank(idiom)) {
+            log.warn("Param idiom is empty!");
+            return JsonResult.error("成语不能为空！");
+        }
+        try {
+            gameService.guessIdiom(id, idiom.trim(), getUsername(session));
+            return JsonResult.success();
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("Send idiom error!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取列表
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/getGuessIdiomList")
+    @ResponseBody
+    public JsonResult getGuessIdiomList(@RequestParam(required = false, defaultValue = "1") Integer page,
+                                        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        try {
+            String username = getUsername(session);
+            List<GuessIdiom> list = gameService.getGuessIdiomList(page, pageSize, username);
+            Integer total = gameService.countGuessIdiom(username);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("data", list);
+            jsonObject.put("total", total);
+            jsonObject.put("loginUser", username);
+            log.info("Get guess idiom list success! page={},pageSize={},total={},username",
+                    page, pageSize, total, username);
+            return JsonResult.success(jsonObject);
+        } catch (Exception e) {
+            log.error("Get guess idiom list failed!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 删除猜成语题目
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/deleteGuessIdiom")
+    @ResponseBody
+    public JsonResult deleteGuessIdiom(Integer id) {
+        try {
+            if (id == null) {
+                log.error("Id is null!");
+                return JsonResult.error("id不能为null！");
+            }
+            String username = getUsername(session);
+            gameService.deleteGuessIdiom(id, username);
+            log.info("Delete guess idiom success! id={},username={}", id, username);
+            return JsonResult.success();
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("Delete guess idiom failed!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取猜成语题目详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/getGuessIdiomDetail")
+    @ResponseBody
+    public JsonResult getGuessIdiomDetail(Integer id) {
+        try {
+            if (id == null) {
+                log.error("Id is null!");
+                return JsonResult.error("id不能为null！");
+            }
+            GuessIdiom guessIdiom = gameService.getGuessIdiomDetail(id);
+            if (guessIdiom == null) {
+                log.error("Guess idiom not exist! id={}", id);
+                return JsonResult.error("题目不存在，请刷新页面后再试！");
+            }
+            return JsonResult.success(guessIdiom);
+        } catch (Exception e) {
+            log.error("Get guess idiom detail failed!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 放弃答题
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/abandonGuessIdiom")
+    @ResponseBody
+    public JsonResult abandonGuessIdiom(Integer id) {
+        try {
+            gameService.abandonGuessIdiom(id, getUsername(session));
+            return JsonResult.success();
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("Abandon guess idiom failed!", e);
             return JsonResult.error(e.getMessage());
         }
     }

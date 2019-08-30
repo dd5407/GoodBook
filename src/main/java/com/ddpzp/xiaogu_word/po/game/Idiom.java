@@ -27,9 +27,9 @@ public class Idiom {
     private String thirdPinyin;
     private String fourthPinyin;
     /**
-     * 难度，数字越大难度越大
+     * 分数，missCount/(missCount+passCount)
      */
-    private Integer level = 0;
+    private Double score = 0.0;
     /**
      * 猜中次数
      */

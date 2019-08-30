@@ -7,10 +7,10 @@ CREATE TABLE `idiom` (
   `second_pinyin` varchar(10) DEFAULT NULL COMMENT '第二个字拼音',
   `third_pinyin` varchar(10) DEFAULT NULL COMMENT '第三个字拼音',
   `fourth_pinyin` varchar(10) DEFAULT NULL COMMENT '第四个字拼音',
-  `level` int(11) DEFAULT NULL COMMENT '难度',
+  `score` double(11,3) DEFAULT NULL COMMENT '分数=miss_count/(miss_count+pass_count)',
   `pass_count` int(11) DEFAULT NULL COMMENT '猜中次数',
   `miss_count` int(11) DEFAULT NULL COMMENT '没猜中次数',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='成语-转屏猜成语、成语接龙';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='成语-转屏猜成语、成语接龙';
