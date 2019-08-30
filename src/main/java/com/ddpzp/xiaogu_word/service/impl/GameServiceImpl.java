@@ -289,6 +289,7 @@ public class GameServiceImpl implements GameService {
 
             //计算难度系数分数
             double score = (double) missCount / (double) (missCount + passCount);
+            idiom.setMissCount(missCount);
             idiom.setPassCount(passCount);
             idiom.setScore(score);
             idiomMapper.updateGuessCount(idiom);

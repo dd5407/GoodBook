@@ -30,5 +30,12 @@
     <select id="idiomLoong" resultType="com.ddpzp.xiaogu_word.po.game.Idiom">
         select * from idiom where first_pinyin=#{queryWord}
     </select>
+    <update id="updateGuessCount" parameterType="com.ddpzp.xiaogu_word.po.game.Idiom">
+        update idiom set
+        score=#{score},
+        pass_count=#{passCount},
+        miss_count=#{missCount}
+        where id=#{id}
+    </update>
 
 </mapper>

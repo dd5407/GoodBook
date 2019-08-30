@@ -296,10 +296,7 @@ function toGuessIdiom(guessItem) {
                         $.alert("成语不能为空！");
                         return false;
                     }
-                    var pass = methods.toGuessIdiom(id, inputIdiom);
-                    if (!pass) {
-                        return false;
-                    }
+                    return methods.toGuessIdiom(id, inputIdiom);
                 }
             },
             关闭: function () {
@@ -468,6 +465,8 @@ var methods = {
         $.ajax({
             type: "POST",
             url: "/gu/game/guessIdiom",
+            //等待ajax返回结果再往下执行，否则isPass永远为false
+            async: false,
             data: {
                 id: id,
                 idiom: idiom
