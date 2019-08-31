@@ -184,6 +184,11 @@ public class GameServiceImpl implements GameService {
             throw new GbException("系统错误，这道题好像不是你的哦？！");
         }
 
+        if (Constants.GUESS_IDIOM_CREATED != guessIdiom.getIdiomStatus()) {
+            log.warn("Guess idiom status error，idiomStatus={}.", guessIdiom.getIdiomStatus());
+            throw new GbException("请不要重复提交！");
+        }
+
         String word = guessIdiom.getWord();
         //答错
         if (!StringUtils.equals(idiom, word)) {
