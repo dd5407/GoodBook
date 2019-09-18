@@ -137,7 +137,7 @@ function refreshGuessIdiomList(page, pageSize) {
 }
 
 function refreshGuessIdiomListDefaultPage() {
-    refreshGuessIdiomList(1, 10);
+    refreshGuessIdiomList(1, 5);
 }
 
 //渲染猜成语列表
