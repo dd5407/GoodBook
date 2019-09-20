@@ -37,6 +37,21 @@ $(function () {
             }
         });
     });
+
+    //成语查询
+    $('#idiomQueryBtn').click(function () {
+        var queryIdiom = $('input[name=idiomQueryInput]').val();
+        if (queryIdiom == undefined || queryIdiom == '') {
+            toastr.error("什么都不填是不行滴！");
+            return
+        }
+        var chineseReg = /^[\u4e00-\u9fa5]{4}$/;
+        if (!chineseReg.test(queryIdiom)) {
+            toastr.error("默默说一声，只能填4个字的中文！");
+            return;
+        }
+        methods.queryIdiom(queryIdiom);
+    })
 });
 
 //展示面板
@@ -503,6 +518,26 @@ var methods = {
                 toastr.error(jqXHR.status + ":" + jqXHR.statusText);
                 toastr.error(textStatus);
             }
-        })
+        });
+    },
+    queryIdiom: function (queryIdiom) {
+        $.ajax({
+            type: "GET",
+            url: "/gu/game/queryIdiom",
+            data: {idiom: queryIdiom},
+            success: function (jsonResult) {
+                if (jsonResult.errorCode != 0) {
+                    toastr.error(jsonResult.msg);
+                    return;
+                }
+                var idiom = jsonResult.data;
+                setIdiomOnPanel(idiom);
+                showPanel("成语查询");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
+                toastr.error(textStatus);
+            }
+        });
     }
 };

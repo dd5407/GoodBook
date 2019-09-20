@@ -273,6 +273,21 @@ public class GameServiceImpl implements GameService {
     }
 
     /**
+     * 成语查询
+     *
+     * @param idiom
+     * @return
+     */
+    @Override
+    public Idiom queryIdiom(String idiom) throws GbException {
+        Idiom result = idiomMapper.getIdiomByWord(idiom);
+        if (result == null) {
+            throw new GbException("成语不存在！");
+        }
+        return result;
+    }
+
+    /**
      * 根据猜的结果，更新统计信息
      *
      * @param word

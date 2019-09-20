@@ -299,4 +299,29 @@ public class GameController extends BaseController {
             return JsonResult.error(e.getMessage());
         }
     }
+
+    /**
+     * 成语查询
+     *
+     * @param idiom
+     * @return
+     */
+    @GetMapping("/queryIdiom")
+    @ResponseBody
+    public JsonResult queryIdiom(String idiom) {
+        try {
+            if (StringUtils.isBlank(idiom)) {
+                log.warn("Idiom is blank!");
+                return JsonResult.error("啥也没输？");
+            }
+            Idiom result = gameService.queryIdiom(idiom);
+            return JsonResult.success(result);
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("Query idiom failed!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
 }

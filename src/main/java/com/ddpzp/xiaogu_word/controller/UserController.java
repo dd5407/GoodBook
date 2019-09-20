@@ -2,6 +2,7 @@ package com.ddpzp.xiaogu_word.controller;
 
 import com.ddpzp.xiaogu_word.common.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,10 @@ public class UserController extends BaseController{
 
     @PostMapping("login")
     public String login(String username, HttpServletRequest request) {
+        if(StringUtils.isBlank(username)){
+            log.warn("Login failed! username is blank!");
+            return "home";
+        }
         log.info("login user:[{}]", username);
         HttpSession session = request.getSession();
         //登录后设置session，放入当前用户名，时效30分钟

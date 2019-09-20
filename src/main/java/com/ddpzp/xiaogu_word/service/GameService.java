@@ -108,4 +108,11 @@ public interface GameService {
      * @param loginUser
      */
     void abandonGuessIdiom(Integer id, String loginUser) throws GbException;
+
+    /**
+     * 成语查询
+     * @param idiom
+     * @return
+     */
+    Idiom queryIdiom(String idiom) throws GbException;
 }
