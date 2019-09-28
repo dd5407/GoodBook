@@ -156,9 +156,9 @@ function refreshGuessIdiomListDefaultPage() {
 }
 
 //渲染猜成语列表
-function showGuessIdiomList(guessIdiomList, loginUser) {
+function showGuessIdiomList(guessIdiomList, loginUser, page, pageSize) {
     var html = "";
-    var index = 1;
+    var index = (page - 1) * pageSize + 1;
     $('#idiomListModal tbody').empty();
     for (var i = 0; i < guessIdiomList.length; i++) {
         var guessItem = guessIdiomList[i];
@@ -422,12 +422,16 @@ var methods = {
             url: "/gu/game/getGuessIdiomList",
             data: params,
             success: function (jsonResult) {
+                if (jsonResult.errorCode != 0) {
+                    toastr.error(jsonResult.msg);
+                    return;
+                }
                 var total = jsonResult.data.total;
                 var guessIdiomList = jsonResult.data.data;
                 var loginUser = jsonResult.data.loginUser;
                 var page = params.page;
                 var pageSize = params.pageSize;
-                showGuessIdiomList(guessIdiomList, loginUser);
+                showGuessIdiomList(guessIdiomList, loginUser, page, pageSize);
                 buildPagination(page, pageSize, total);
             },
             error: function (jqXHR, textStatus, errorThrown) {

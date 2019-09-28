@@ -31,13 +31,13 @@
                     </div>
                     <div class="collapse navbar-collapse" id="navLinks">
                         <ul class="nav navbar-nav">
-                            <li><a th:href="@{/gu/word/listPage}" target="framePage">单词本</a></li>
+                            <li><a th:href="@{/gu/word/page/list}" target="framePage">单词本</a></li>
                         </ul>
                         <ul class="nav navbar-nav">
-                            <li><a th:href="@{/gu/game/countFrogPage}" target="framePage">数青蛙</a></li>
+                            <li><a th:href="@{/gu/game/page/countFrog}" target="framePage">数青蛙</a></li>
                         </ul>
                         <ul class="nav navbar-nav">
-                            <li><a th:href="@{/gu/game/idiomPage}" target="framePage">成语</a></li>
+                            <li><a th:href="@{/gu/game/page/idiom}" target="framePage">成语</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li>
@@ -50,7 +50,7 @@
         </div>
     </div>
     <div>
-        <iframe class="list" th:src="@{/gu/word/listPage}" name="framePage"></iframe>
+        <iframe class="list" th:src="@{/gu/word/page/list}" name="framePage"></iframe>
     </div>
 </div>
 </body>

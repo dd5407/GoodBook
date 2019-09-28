@@ -74,13 +74,25 @@ public class GameController extends BaseController {
      * @param model
      * @return
      */
-    @GetMapping("/countFrogPage")
+    @GetMapping("/page/countFrog")
     public String frogCountPage(Model model) {
         String username = getUsername(session);
         log.info("Count frog,username={}", username);
         List<Frog> list = gameService.countFrog(1, 100);
         model.addAttribute("frogList", list);
         return "countFrog";
+    }
+
+    /**
+     * 跳转成语页面
+     *
+     * @return
+     */
+    @GetMapping("/page/idiom")
+    public String idiomPage() {
+        String username = getUsername(session);
+        log.info("Idiom,username={}", username);
+        return "idiom";
     }
 
     @GetMapping("/randomIdiom")
@@ -93,18 +105,6 @@ public class GameController extends BaseController {
             log.error("随机获取成语失败！", e);
             return JsonResult.error(e.getMessage());
         }
-    }
-
-    /**
-     * 跳转成语页面
-     *
-     * @return
-     */
-    @GetMapping("/idiomPage")
-    public String idiomPage() {
-        String username = getUsername(session);
-        log.info("Idiom,username={}", username);
-        return "idiom";
     }
 
     @GetMapping("/idiomLoong")

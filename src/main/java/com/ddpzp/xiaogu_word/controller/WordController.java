@@ -38,7 +38,7 @@ public class WordController extends BaseController {
     @Autowired
     private HttpSession session;
 
-    @GetMapping(value = "listPage")
+    @GetMapping(value = "page/list")
     public String listPage(Model model) {
         try {
             String username = getUsername(session);
