@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.user.UserMapper">
+    <insert id="addLoginRecord" parameterType="com.ddpzp.xiaogu_word.po.user.LoginRecord">
+        insert into login_record (account,ip) values (#{account},#{ip})
+    </insert>
+    <select id="getLoginRecords" resultType="com.ddpzp.xiaogu_word.po.user.LoginRecord">
+        select * from login_record
+        <where>
+            <if test="account!=null and account!=''">
+                account=#{account}
+            </if>
+        </where>
+        order by login_time desc
+    </select>
+</mapper>

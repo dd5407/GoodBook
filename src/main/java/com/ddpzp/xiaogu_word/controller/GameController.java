@@ -90,8 +90,6 @@ public class GameController extends BaseController {
      */
     @GetMapping("/page/idiom")
     public String idiomPage() {
-        String username = getUsername(session);
-        log.info("Idiom,username={}", username);
         return "idiom";
     }
 
@@ -101,6 +99,9 @@ public class GameController extends BaseController {
         try {
             Idiom idiom = gameService.randomIdiom();
             return JsonResult.success(idiom);
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
         } catch (Exception e) {
             log.error("随机获取成语失败！", e);
             return JsonResult.error(e.getMessage());
@@ -311,7 +312,7 @@ public class GameController extends BaseController {
     public JsonResult queryIdiom(String idiom) {
         try {
             if (StringUtils.isBlank(idiom)) {
-                log.warn("Idiom is blank!");
+                log.warn("Query idiom is blank!");
                 return JsonResult.error("啥也没输？");
             }
             Idiom result = gameService.queryIdiom(idiom);

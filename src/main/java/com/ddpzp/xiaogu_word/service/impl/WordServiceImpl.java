@@ -22,7 +22,7 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public List<Word> getWords(String query, String username, Integer current, Integer pageSize) {
-        log.info("query={},username={},current={},pageSize={}", query, username, current, pageSize);
+        log.info("Get words. query={},username={},current={},pageSize={}", query, username, current, pageSize);
         Integer startNum;
         if (current == null) {
             startNum = null;

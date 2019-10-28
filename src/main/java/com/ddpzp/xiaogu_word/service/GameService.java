@@ -111,6 +111,7 @@ public interface GameService {
 
     /**
      * 成语查询
+     *
      * @param idiom
      * @return
      */

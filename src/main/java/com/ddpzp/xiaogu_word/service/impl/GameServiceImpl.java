@@ -57,8 +57,9 @@ public class GameServiceImpl implements GameService {
         }
         //生成一个0到total-1的随机数
         int randomIndex = (int) (Math.random() * total);
-        log.info("生成[0-{}]随机数：[{}]", total, randomIndex);
-        return idiomMapper.getIdiomByIndex(randomIndex);
+        Idiom randomIdiom = idiomMapper.getIdiomByIndex(randomIndex);
+        log.info("生成[0-{}]随机数：[{}]，成语：[{}]", total, randomIndex, randomIdiom.getWord());
+        return randomIdiom;
     }
 
     /**
@@ -193,7 +194,7 @@ public class GameServiceImpl implements GameService {
         //答错
         if (!StringUtils.equals(idiom, word)) {
             updateGuessCount(word, false);
-            log.warn("Missing guess idiom! guess idiom:[{}],answer:[{}]", idiom, word);
+            log.warn("Guess idiom wrong! guess idiom:[{}],answer:[{}],username:[{}]", idiom, word, username);
             throw new GbException(String.format("啊哦，答错了！不是[%s]", idiom));
         }
         //答对
@@ -270,6 +271,7 @@ public class GameServiceImpl implements GameService {
             throw new GbException("题目貌似不是给你答的？");
         }
         guessIdiomMapper.updateStatus(id, Constants.GUESS_IDIOM_ABANDON);
+        log.info("Abandon guess idiom success！username={}", loginUser);
     }
 
     /**
@@ -282,8 +284,10 @@ public class GameServiceImpl implements GameService {
     public Idiom queryIdiom(String idiom) throws GbException {
         Idiom result = idiomMapper.getIdiomByWord(idiom);
         if (result == null) {
+            log.info("Query idiom is not exist! idiom=[{}]", idiom);
             throw new GbException("成语不存在！");
         }
+        log.info("Query idiom success! idiom=[{}]", idiom);
         return result;
     }
 
@@ -313,10 +317,10 @@ public class GameServiceImpl implements GameService {
             idiom.setPassCount(passCount);
             idiom.setScore(score);
             idiomMapper.updateGuessCount(idiom);
-            log.info("Update guess count success! bingo={},passCount={},missCount={},score={}",
-                    isBingo, passCount, missCount, score);
+            log.info("Update guess count! bingo={},passCount={},missCount={},score={},word={}",
+                    isBingo, passCount, missCount, score, word);
         } catch (Exception e) {
-            log.error("Update guess count failed！", e);
+            log.error("Update guess count failed！word={}", word, e);
         }
     }
 
