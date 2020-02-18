@@ -4,6 +4,7 @@ import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
+import com.ddpzp.xiaogu_word.po.game.LotteryItem;
 
 import java.util.List;
 
@@ -116,4 +117,75 @@ public interface GameService {
      * @return
      */
     Idiom queryIdiom(String idiom) throws GbException;
+
+    /**
+     * 获取抽奖列表
+     *
+     * @param username
+     * @param current
+     * @param pageSize
+     * @return
+     */
+    List<LotteryItem> getLotteryItems(String username, Integer current, Integer pageSize);
+
+    /**
+     * 获取抽奖选项数量
+     *
+     * @param username
+     * @return
+     */
+    Integer countLotteryItems(String username);
+
+    /**
+     * 根据选项名获取抽奖选项
+     *
+     * @param name
+     * @param username
+     * @return
+     */
+    List<LotteryItem> getLotteryItemByName(String name, String username);
+
+    /**
+     * 添加抽奖选项
+     *
+     * @param lotteryItem
+     */
+    void addLotteryItem(LotteryItem lotteryItem);
+
+    /**
+     * 根据id获取抽奖选项
+     *
+     * @param id
+     * @return
+     */
+    LotteryItem getLotteryItem(Integer id);
+
+    /**
+     * 修改抽奖选项
+     *
+     * @param lotteryItem
+     */
+    void updateLotteryItem(LotteryItem lotteryItem);
+
+    /**
+     * 删除抽奖选项
+     *
+     * @param id
+     */
+    void deleteLotteryItem(Integer id);
+
+    /**
+     * 批量删除抽奖选项
+     *
+     * @param ids
+     */
+    void batchDeleteLottery(Integer[] ids);
+
+    /**
+     * 抽奖
+     *
+     * @return
+     * @param username
+     */
+    LotteryItem lottery(String username) throws GbException;
 }

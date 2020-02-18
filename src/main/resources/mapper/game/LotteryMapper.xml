@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.game.LotteryMapper">
+    <select id="getLotteryItems" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+        SELECT * FROM lottery
+        <where>
+            <if test="creator!=null and creator!=''">
+                and creator=#{creator}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
+
+    <select id="countLotteryItems" resultType="java.lang.Integer">
+        SELECT count(*) FROM lottery
+        <where>
+            <if test="creator!=null and creator!=''">
+                creator=#{creator}
+            </if>
+        </where>
+    </select>
+
+    <select id="getLotteryItemByName" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+        SELECT * FROM lottery WHERE name=#{name} AND creator=#{creator}
+    </select>
+
+    <insert id="addLotteryItem" parameterType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+        INSERT INTO lottery
+        (name,create_time,creator)
+        VALUES
+        (#{name},#{createTime},#{creator})
+    </insert>
+
+    <select id="getLotteryItem" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+        SELECT * FROM lottery WHERE id=#{id}
+    </select>
+
+    <update id="updateLotteryItem" parameterType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+        update lottery
+        set name=#{name},
+        update_time=#{updateTime}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteLotteryItem">
+        delete from lottery where id=#{id}
+    </delete>
+
+    <delete id="batchDeleteLottery">
+        delete from lottery
+        where id in
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getLotteryItemByIndex" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+        select * from lottery limit #{index},1
+    </select>
+</mapper>

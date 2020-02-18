@@ -4,11 +4,13 @@ import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.mapper.game.GuessIdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.game.IdiomMapper;
+import com.ddpzp.xiaogu_word.mapper.game.LotteryMapper;
 import com.ddpzp.xiaogu_word.mapper.spider.SpiderRecordMapper;
 import com.ddpzp.xiaogu_word.po.SpiderRecord;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
+import com.ddpzp.xiaogu_word.po.game.LotteryItem;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.ddpzp.xiaogu_word.util.IdiomCollection;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,6 +39,8 @@ public class GameServiceImpl implements GameService {
     private SpiderRecordMapper spiderRecordMapper;
     @Autowired
     private GuessIdiomMapper guessIdiomMapper;
+    @Autowired
+    private LotteryMapper lotteryMapper;
 
     @Override
     public List<Frog> countFrog(Integer startNum, Integer size) {
@@ -289,6 +294,120 @@ public class GameServiceImpl implements GameService {
         }
         log.info("Query idiom success! idiom=[{}]", idiom);
         return result;
+    }
+
+    /**
+     * 获取抽奖列表
+     *
+     * @param username
+     * @param current
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List<LotteryItem> getLotteryItems(String username, Integer current, Integer pageSize) {
+        log.info("Get lottery item list. username={},current={},pageSize={}", username, current, pageSize);
+        Integer startNum;
+        if (current == null) {
+            startNum = null;
+        } else {
+            startNum = (current - 1) * pageSize;
+        }
+        return lotteryMapper.getLotteryItems(username, startNum, pageSize);
+    }
+
+    /**
+     * 获取抽奖选项数量
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public Integer countLotteryItems(String username) {
+        return lotteryMapper.countLotteryItems(username);
+    }
+
+    /**
+     * 根据选项名获取抽奖选项
+     *
+     * @param name
+     * @param username
+     * @return
+     */
+    @Override
+    public List<LotteryItem> getLotteryItemByName(String name, String username) {
+        return lotteryMapper.getLotteryItemByName(name, username);
+    }
+
+    /**
+     * 添加抽奖选项
+     *
+     * @param lotteryItem
+     */
+    @Override
+    public void addLotteryItem(LotteryItem lotteryItem) {
+        lotteryMapper.addLotteryItem(lotteryItem);
+    }
+
+    /**
+     * 根据id获取抽奖选项
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public LotteryItem getLotteryItem(Integer id) {
+        return lotteryMapper.getLotteryItem(id);
+    }
+
+    /**
+     * 修改抽奖选项
+     *
+     * @param lotteryItem
+     */
+    @Override
+    public void updateLotteryItem(LotteryItem lotteryItem) {
+        lotteryItem.setUpdateTime(new Date());
+        lotteryMapper.updateLotteryItem(lotteryItem);
+    }
+
+    /**
+     * 删除抽奖选项
+     *
+     * @param id
+     */
+    @Override
+    public void deleteLotteryItem(Integer id) {
+        lotteryMapper.deleteLotteryItem(id);
+    }
+
+    /**
+     * 批量删除抽奖选项
+     *
+     * @param ids
+     */
+    @Override
+    public void batchDeleteLottery(Integer[] ids) {
+        lotteryMapper.batchDeleteLottery(ids);
+    }
+
+    /**
+     * 抽奖
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public LotteryItem lottery(String username) throws GbException {
+        Integer total = lotteryMapper.countLotteryItems(username);
+        if (total <= 0) {
+            throw new GbException("啥也没有，请添加选项！");
+        }
+        //生成一个0到total-1的随机数
+        int randomIndex = (int) (Math.random() * total);
+        LotteryItem lotteryItem = lotteryMapper.getLotteryItemByIndex(randomIndex);
+        log.info("生成[0-{}]随机数：[{}]，抽奖选项名：[{}]", total, randomIndex, lotteryItem.getName());
+        return lotteryItem;
     }
 
     /**

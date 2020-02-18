@@ -2,14 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>单词本</title>
+    <title>抽奖</title>
     <meta name="viewport"
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
     <meta http-equiv="expires" content="0">
     <link rel="stylesheet" type="text/css" th:href="@{/css/common/bootstrap.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/wordlist/style.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/game/lottery.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/common/toastr.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/common/jquery-confirm.css}"/>
     <script type="text/javascript" th:src="@{/js/common/jquery-3.4.1.min.js}"></script>
@@ -17,26 +17,19 @@
     <script type="text/javascript" th:src="@{/js/common/bootbox.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/common/toastr.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/common/jquery-confirm.js}"></script>
-    <script type="text/javascript" th:src="@{/js/wordlist/wordlist.js}"></script>
+    <script type="text/javascript" th:src="@{/js/game/lottery.js}"></script>
 </head>
 <body>
 <div class="box">
     <div class="content">
         <div class="container content_width">
             <div class="page-header">
-                <h1 align="center"><small>单词本</small></h1>
+                <h1 align="center"><small>抽奖</small></h1>
             </div>
-            <div class="person_search">
+            <div class="lottery">
                 <div class="search_input">
-                    <div class="input-group mb-3">
-                        <input id="Ktext" type="text" class="form-control" placeholder="请输入想要搜索的内容">
-                    </div>
-                </div>
-                <div class="search_input">
-                    <button class="btn btn-primary search_btn" data-loading-text="正在查询..." type="button"
-                            id="search_btn">查询
+                    <button class="btn btn-primary lottery_btn" type="button" onclick="randomModal()">抽奖
                     </button>
-                    <button class="btn btn-primary search_btn" type="button" id="reset_btn">重置</button>
                 </div>
             </div>
             <div class="line"></div>
@@ -51,11 +44,11 @@
                 <span class="glyphicon glyphicon-minus"></span>
                 <span>删除</span>
             </button>
-            <div class="modal fade" id="word">
+            <div class="modal fade" id="lotteryModal">
                 <div class="modal-dialog modal-lg modal_position">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <label>添加</label>
+                            <label>添加选项</label>
                         </div>
                         <div class="modal-body">
                             <table id="wordModal" class="table">
@@ -68,15 +61,11 @@
                                 </tr>
                                 <tr>
                                     <td class="tb_bg">
-                                        <label><span style="font-size: 14px; color: red;">*</span>英文</label>
+                                        <label><span style="font-size: 14px; color: red;">*</span>选项</label>
+                                        <span id="notice" hidden="hidden" class="glyphicon glyphicon-question-sign"
+                                              style="margin-top:25px;cursor:pointer;" onclick="notice()"></span>
                                     </td>
-                                    <td><input name="english" class="english" type="text" placeholder="请输入英文"/></td>
-                                </tr>
-                                <tr>
-                                    <td class="tb_bg">
-                                        <label><span style="font-size: 14px; color: red;">*</span>中文</label>
-                                    </td>
-                                    <td><input name="chinese" class="chinese" type="text" placeholder="请输入中文"/></td>
+                                    <td><input name="lotteryName" class="lotteryName" type="text" placeholder="请输入选项名"/></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -93,7 +82,7 @@
             <div class="modal-dialog modal-lg modal_position">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <label>删除</label>
+                        <label>删除选项</label>
                     </div>
                     <div class="modal-body">
                         <p>确定要删除吗？</p>
@@ -101,6 +90,22 @@
                     <div class="modal-footer">
                         <button id="delConfirm_btn" type="button" class="btn btn-secondary">确定</button>
                         <button id="delCancel_btn" type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="randomModal">
+            <div class="modal-dialog modal-lg modal_position">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <label>抽奖</label>
+                    </div>
+                    <div class="modal-body">
+                        <p></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="randomBegin_btn" type="button" class="btn btn-secondary">抽奖</button>
+                        <button id="lotCancel_btn" type="button" class="btn btn-secondary" data-dismiss="modal">退出</button>
                     </div>
                 </div>
             </div>
@@ -114,24 +119,22 @@
                 </th>
                 <th hidden="hidden">id</th>
                 <th class="hidden-xs">序号</th>
-                <th>英文</th>
-                <th>中文</th>
+                <th>选项</th>
                 <th>创建时间</th>
                 <th class="hidden-xs">创建人</th>
                 <th>操作</th>
             </tr>
             </thead>
             <tbody id="show_tbody">
-            <tr th:each="word:${words}">
+            <tr th:each="item:${lotteryItems}">
                 <td>
-                    <input type="checkbox" th:value="${word.id}">
+                    <input type="checkbox" th:value="${item.id}">
                 </td>
-                <td name="id" hidden="hidden" th:text="${word.id}">-</td>
-                <td name="index" class="hidden-xs" th:text="${wordStat.index+1}">-</td>
-                <td name="english" th:text="${word.english}">-</td>
-                <td name="chinese" th:text="${word.chinese}">-</td>
-                <td name="createTime" th:text="${#dates.format(word.createTime,'yyyy-MM-dd HH:mm:ss')}">-</td>
-                <td name="creator" class="hidden-xs" th:text="${word.creator}">-</td>
+                <td name="id" hidden="hidden" th:text="${item.id}">-</td>
+                <td name="index" class="hidden-xs" th:text="${itemStat.index+1}">-</td>
+                <td name="itemName" th:text="${item.name}">-</td>
+                <td name="createTime" th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">-</td>
+                <td name="creator" class="hidden-xs" th:text="${item.creator}">-</td>
                 <td>
                     <a href="javascript:void(0);" class="edit" onclick="editModal(this)">编辑</a>
                     <a href="javascript:void(0);" class="del" onclick="deleteModal(this)">删除</a>
@@ -139,54 +142,7 @@
             </tr>
             </tbody>
         </table>
-        <nav hidden="hidden" aria-label="Page navigation">
-            <ul class="pagination">
-                <li>
-                    <a id="previous" href="javascript:void(0);" onclick="prePage()" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="pageLink"><a href="javascript:void(0);" onclick="changePage(1)">1</a></li>
-                <li class="pageLink"><a href="javascript:void(0);" onclick="changePage(2)">2</a></li>
-                <li class="pageLink"><a href="javascript:void(0);" onclick="changePage(3)">3</a></li>
-                <li class="pageLink"><a href="javascript:void(0);" onclick="changePage(4)">4</a></li>
-                <li class="pageLink"><a href="javascript:void(0);" onclick="changePage(5)">5</a></li>
-                <li>
-                    <a href="javascript:void(0);" onclick="nextPage()" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </div>
-<script th:inline="javascript">
-//    total = [[${total}]];
-//    console.log("total=" + total);
-//    var pageNum;
-//    if (total % pageSize == 0) {
-//        pageNum = parseInt(total / pageSize);
-//    } else {
-//        pageNum = parseInt(total / pageSize) + 1;
-//    }
-//    //去除模板中的页码
-//    $('.pageLink').remove();
-//    //重新生成页码
-//    //前三页
-//    for (var i = 0; i < pageNum && i < 3; i++) {
-//        var j = i + 1;
-//        $('.pagination li').eq(i).after("<li><a class='pageLink' href='javascript:void(0);' onclick='changePage(" + j + ")'>" + j + "</a></li>");
-//    }
-//    //超过五页，中间页码省略
-//    if (pageNum > 5) {
-//        $('.pagination li').eq(2).after("<p id='hiddenPage'>...</p>");
-//    }
-//    //后两页
-//    if (pageNum > 3) {
-//        for (var i = pageNum; i > 0 && i > pageNum - 2; i--) {
-//            $('#hiddenPage').after("<li><a class='pageLink' href='javascript:void(0);' onclick='changePage(" + i + ")'>" + i + "</a></li>");
-//        }
-//    }
-</script>
 </body>
 </html>

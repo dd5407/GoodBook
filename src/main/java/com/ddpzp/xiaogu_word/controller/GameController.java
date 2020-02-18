@@ -8,6 +8,7 @@ import com.ddpzp.xiaogu_word.model.JsonResult;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
+import com.ddpzp.xiaogu_word.po.game.LotteryItem;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -322,6 +325,166 @@ public class GameController extends BaseController {
             return JsonResult.error(ge.getMessage());
         } catch (Exception e) {
             log.error("Query idiom failed!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "page/lotteryList")
+    public String lotteryListPage(Model model) {
+        try {
+            String username = getUsername(session);
+            log.info("Get lottery item list,username={}", username);
+            List<LotteryItem> lotteryItems = gameService.getLotteryItems(username, null, null);
+            Integer total = gameService.countLotteryItems(username);
+            model.addAttribute("lotteryItems", lotteryItems);
+            model.addAttribute("current", 1);
+            model.addAttribute("total", total);
+        } catch (Exception e) {
+            log.error("获取抽奖列表失败！", e);
+            model.addAttribute(Constants.ERROR_MSG_KEY, String.format("获取抽奖列表失败,错误信息：[%s]", e.getMessage()));
+        }
+        return "lottery";
+    }
+
+    @GetMapping(value = "lottery/itemList")
+    @ResponseBody
+    public JsonResult lotteryList(@RequestParam(required = false, defaultValue = "1") Integer current,
+                                  @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        try {
+            String username = getUsername(session);
+            current = null;
+            pageSize = null;
+            List<LotteryItem> lotteryItems = gameService.getLotteryItems(username, current, pageSize);
+            Integer total = gameService.countLotteryItems(username);
+            JSONObject obj = new JSONObject();
+            obj.put("data", lotteryItems);
+            obj.put("total", total);
+            return JsonResult.success(obj);
+        } catch (Exception e) {
+            log.error("获取抽奖列表失败！", e);
+            return JsonResult.error(String.format("获取抽奖列表失败！错误信息：[%s]", e.getMessage()));
+        }
+    }
+
+    @PostMapping(value = "lottery/addItem")
+    @ResponseBody
+    public JsonResult addLotteryItem(@RequestBody LotteryItem lotteryItem) {
+        String name = lotteryItem.getName();
+        if (StringUtils.isBlank(name)) {
+            return JsonResult.error("请填写选项！");
+        }
+        String[] nameArr = name.split(",");
+        try {
+            for (String singleName : nameArr) {
+                addLotteryItem(singleName);
+            }
+            return JsonResult.success();
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("添加抽奖选项失败!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    private void addLotteryItem(String name) throws GbException {
+        if (StringUtils.isBlank(name)) {
+            throw new GbException("选项格式有误！");
+        }
+        LotteryItem lotteryItem = new LotteryItem();
+        lotteryItem.setName(name);
+        lotteryItem.setCreateTime(new Date());
+        lotteryItem.setCreator(getUsername(session));
+
+        List<LotteryItem> lotteryItems = gameService.getLotteryItemByName(name, getUsername(session));
+        if (lotteryItems.size() > 0) {
+            throw new GbException(String.format("选项[%s]已存在！", name));
+        }
+        gameService.addLotteryItem(lotteryItem);
+    }
+
+    @PostMapping(value = "lottery/updateItem")
+    @ResponseBody
+    public JsonResult updateLotteryItem(@RequestBody LotteryItem lotteryItem) {
+        if (StringUtils.isBlank(lotteryItem.getName())) {
+            return JsonResult.error("请填写选项！");
+        }
+
+        Integer id = lotteryItem.getId();
+        String wordJsonFromRequest = JSON.toJSONString(lotteryItem);
+        if (id == null) {
+            log.error("Update word error, id is null! {}", wordJsonFromRequest);
+            return JsonResult.error("id不存在，请刷新列表后再试！");
+        }
+        try {
+            LotteryItem itemInDatabase = gameService.getLotteryItem(id);
+            if (itemInDatabase == null) {
+                log.error("Update lottery item error,item is not exists! Request item:[{}]", wordJsonFromRequest);
+                return JsonResult.error("该选项不存在！请刷新列表后再试！");
+            }
+            //未做修改，直接返回成功
+            if (StringUtils.equals(itemInDatabase.getName(), lotteryItem.getName())) {
+                return JsonResult.success();
+            }
+            //将修改存入数据库
+            gameService.updateLotteryItem(lotteryItem);
+            return JsonResult.success();
+        } catch (Exception e) {
+            log.error("修改抽奖选项失败！", e);
+            return JsonResult.error(String.format("修改选项失败，错误信息：[%s]", e.getMessage()));
+        }
+    }
+
+    @PostMapping(value = "lottery/deleteItem")
+    @ResponseBody
+    public JsonResult deleteLotteryItem(Integer id) {
+        try {
+            if (id == null) {
+                log.error("id不能为空");
+                return JsonResult.error("id不能为空！");
+            }
+            LotteryItem lotteryItem = gameService.getLotteryItem(id);
+            if (lotteryItem == null) {
+                log.error("抽奖选项不存在，id=[{}]", id);
+                return JsonResult.error("选项不存在！");
+            }
+            gameService.deleteLotteryItem(id);
+            log.info("用户[{}]删除抽奖选项[{}]成功！", getUsername(session), lotteryItem.getName());
+            return JsonResult.success();
+        } catch (Exception e) {
+            log.error("删除抽奖选项失败！", e);
+            return JsonResult.error(String.format("删除选项失败！错误信息：[%s]", e.getMessage()));
+        }
+    }
+
+    @PostMapping("lottery/batchDelete")
+    @ResponseBody
+    public JsonResult batchDelete(Integer[] ids) {
+        if (ids == null || ids.length <= 0) {
+            return JsonResult.error("至少选择一项！");
+        }
+        try {
+            gameService.batchDeleteLottery(ids);
+            log.info("抽奖选项批量删除成功！id:[{}]", Arrays.toString(ids));
+            return JsonResult.success();
+        } catch (Exception e) {
+            log.error("批量删除抽奖选项失败！", e);
+            return JsonResult.error(String.format("批量删除选项失败！错误信息：[%s]", e.getMessage()));
+        }
+    }
+
+    @GetMapping("lottery/getRandomItem")
+    @ResponseBody
+    public JsonResult randomLottery() {
+        try {
+            LotteryItem lotteryItem = gameService.lottery(getUsername(session));
+            return JsonResult.success(lotteryItem);
+        } catch (GbException ge) {
+            log.warn(ge.getMessage());
+            return JsonResult.error(ge.getMessage());
+        } catch (Exception e) {
+            log.error("抽奖失败!", e);
             return JsonResult.error(e.getMessage());
         }
     }
