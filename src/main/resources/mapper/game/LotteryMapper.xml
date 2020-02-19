@@ -58,6 +58,8 @@
     </delete>
 
     <select id="getLotteryItemByIndex" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
-        select * from lottery limit #{index},1
+        SELECT * FROM lottery
+        WHERE creator=#{creator}
+        limit #{index},1
     </select>
 </mapper>

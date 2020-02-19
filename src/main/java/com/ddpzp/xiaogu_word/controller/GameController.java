@@ -373,7 +373,7 @@ public class GameController extends BaseController {
         if (StringUtils.isBlank(name)) {
             return JsonResult.error("请填写选项！");
         }
-        String[] nameArr = name.split(",");
+        String[] nameArr = name.trim().split("\\s+");
         try {
             for (String singleName : nameArr) {
                 addLotteryItem(singleName);
@@ -411,6 +411,7 @@ public class GameController extends BaseController {
             return JsonResult.error("请填写选项！");
         }
 
+        name = name.trim();
         Integer id = lotteryItem.getId();
         String wordJsonFromRequest = JSON.toJSONString(lotteryItem);
         if (id == null) {

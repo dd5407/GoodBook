@@ -147,7 +147,7 @@ function deleteModal(ele) {
 function notice() {
     $.alert({
         title: "tips",
-        content: "添加选项时，多个选项用英文逗号隔开，可以进行批量添加，如：一等奖,二等奖,三等奖",
+        content: "添加选项时，多个选项用空格隔开，可以进行批量添加，如：一等奖 二等奖 三等奖",
         buttons: {
             明白了: function () {
                 toastr.success("聪明！");

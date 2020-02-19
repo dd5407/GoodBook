@@ -29,5 +29,5 @@ public interface LotteryMapper {
 
     void batchDeleteLottery(@Param("ids") Integer[] ids);
 
-    LotteryItem getLotteryItemByIndex(Integer randomIndex);
+    LotteryItem getLotteryItemByIndex(@Param("creator") String creator,@Param("index") Integer index);
 }

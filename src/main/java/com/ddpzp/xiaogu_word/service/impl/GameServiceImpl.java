@@ -405,7 +405,7 @@ public class GameServiceImpl implements GameService {
         }
         //生成一个0到total-1的随机数
         int randomIndex = (int) (Math.random() * total);
-        LotteryItem lotteryItem = lotteryMapper.getLotteryItemByIndex(randomIndex);
+        LotteryItem lotteryItem = lotteryMapper.getLotteryItemByIndex(username, randomIndex);
         log.info("生成[0-{}]随机数：[{}]，抽奖选项名：[{}]", total, randomIndex, lotteryItem.getName());
         return lotteryItem;
     }
