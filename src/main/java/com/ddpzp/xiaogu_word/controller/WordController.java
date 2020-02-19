@@ -91,8 +91,7 @@ public class WordController extends BaseController {
         word.setCreateTime(new Date());
         word.setCreator(getUsername(session));
 
-        List<Word> words = wordService.getWordByEnglish(english, getUsername(session));
-        if (words.size() > 0) {
+        if (wordExists(english)) {
             log.warn("单词[{}]已存在！", english);
             return JsonResult.error(String.format("单词[%s]已存在！", english));
         }
@@ -108,10 +107,13 @@ public class WordController extends BaseController {
     @PostMapping(value = "updateWord")
     @ResponseBody
     public JsonResult updateWord(@RequestBody Word word) {
-        if (StringUtils.isBlank(word.getChinese())) {
+        String chinese = word.getChinese();
+        String english = word.getEnglish();
+
+        if (StringUtils.isBlank(chinese)) {
             return JsonResult.error("请填写中文！");
         }
-        if (StringUtils.isBlank(word.getEnglish())) {
+        if (StringUtils.isBlank(english)) {
             return JsonResult.error("请填写英文！");
         }
 
@@ -129,10 +131,16 @@ public class WordController extends BaseController {
             }
             Word wordInDatabase = wordInDatabaseList.get(0);
             //未做修改，直接返回成功
-            if (StringUtils.equals(wordInDatabase.getEnglish(), word.getEnglish())
-                    && StringUtils.equals(wordInDatabase.getChinese(), word.getChinese())) {
+            if (StringUtils.equals(wordInDatabase.getEnglish(), english)
+                    && StringUtils.equals(wordInDatabase.getChinese(), chinese)) {
                 return JsonResult.success();
             }
+
+            if(wordExists(english)){
+                log.warn("单词[{}]已存在！", english);
+                return JsonResult.error(String.format("单词[%s]已存在！", english));
+            }
+
             //将修改存入数据库
             wordService.updateWord(word);
             return JsonResult.success();
@@ -179,5 +187,10 @@ public class WordController extends BaseController {
             log.error("批量删除单词失败！", e);
             return JsonResult.error(String.format("批量删除单词失败！错误信息：[%s]", e.getMessage()));
         }
+    }
+
+    private boolean wordExists(String english) {
+        List<Word> words = wordService.getWordByEnglish(english, getUsername(session));
+        return words.size() > 0;
     }
 }

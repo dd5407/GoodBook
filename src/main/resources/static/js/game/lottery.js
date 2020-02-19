@@ -144,7 +144,7 @@ function deleteModal(ele) {
     });
 }
 
-function notice(){
+function notice() {
     $.alert({
         title: "tips",
         content: "添加选项时，多个选项用英文逗号隔开，可以进行批量添加，如：一等奖,二等奖,三等奖",
@@ -229,11 +229,11 @@ var methods = {
             success: function (jsonResult) {
                 if (jsonResult.errorCode == 0) {
                     toastr.success("添加成功！");
-                    //刷新列表
-                    refreshList();
                 } else {
                     toastr.error("添加失败！" + jsonResult.msg);
                 }
+                //刷新列表，批量添加失败时，可能会有部分成功，所以也要刷新列表
+                refreshList();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 toastr.error(jqXHR.status + ":" + jqXHR.statusText);

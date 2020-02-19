@@ -397,8 +397,7 @@ public class GameController extends BaseController {
         lotteryItem.setCreateTime(new Date());
         lotteryItem.setCreator(getUsername(session));
 
-        List<LotteryItem> lotteryItems = gameService.getLotteryItemByName(name, getUsername(session));
-        if (lotteryItems.size() > 0) {
+        if (lotteryExists(name)) {
             throw new GbException(String.format("选项[%s]已存在！", name));
         }
         gameService.addLotteryItem(lotteryItem);
@@ -407,7 +406,8 @@ public class GameController extends BaseController {
     @PostMapping(value = "lottery/updateItem")
     @ResponseBody
     public JsonResult updateLotteryItem(@RequestBody LotteryItem lotteryItem) {
-        if (StringUtils.isBlank(lotteryItem.getName())) {
+        String name = lotteryItem.getName();
+        if (StringUtils.isBlank(name)) {
             return JsonResult.error("请填写选项！");
         }
 
@@ -424,9 +424,15 @@ public class GameController extends BaseController {
                 return JsonResult.error("该选项不存在！请刷新列表后再试！");
             }
             //未做修改，直接返回成功
-            if (StringUtils.equals(itemInDatabase.getName(), lotteryItem.getName())) {
+            if (StringUtils.equals(itemInDatabase.getName(), name)) {
                 return JsonResult.success();
             }
+
+            if (lotteryExists(name)) {
+                log.warn(String.format("抽奖选项[%s]已存在！", name));
+                return JsonResult.error(String.format("选项[%s]已存在！", name));
+            }
+
             //将修改存入数据库
             gameService.updateLotteryItem(lotteryItem);
             return JsonResult.success();
@@ -487,5 +493,10 @@ public class GameController extends BaseController {
             log.error("抽奖失败!", e);
             return JsonResult.error(e.getMessage());
         }
+    }
+
+    private boolean lotteryExists(String name) {
+        List<LotteryItem> lotteryItems = gameService.getLotteryItemByName(name, getUsername(session));
+        return lotteryItems.size() > 0;
     }
 }
