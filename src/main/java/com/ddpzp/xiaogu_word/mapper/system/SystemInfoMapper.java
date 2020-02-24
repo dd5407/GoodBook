@@ -24,7 +24,7 @@ public interface SystemInfoMapper {
      * @param ip
      * @return
      */
-    List<SystemInformation> getSystemInfoRecords(String ip);
+    List<SystemInformation> getSystemInfoRecords(@Param("ip") String ip);
 
     /**
      * 根据ip获取最近一次监控数据
