@@ -37,6 +37,7 @@ public class SystemController extends BaseController {
     }
 
     @GetMapping("infos")
+    @ResponseBody
     public JsonResult getSystemInfoRecords(){
         try {
             List<SystemInformation> records = systemService.getLocalSystemInfoRecords();
