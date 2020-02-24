@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.system.SystemInfoMapper">
+    <insert id="addSystemInfo" parameterType="com.ddpzp.xiaogu_word.po.system.SystemInformation">
+        INSERT INTO system_info(
+        cpu_usage,
+        swap_memory_used,
+        swap_memory_total,
+        memory_used,
+        memory_total,
+        swap_memory_usage,
+        memory_usage,
+        disk_used,
+        disk_total,
+        disk_usage,
+        ip) VALUES (
+        #{cpuUsage},
+        #{swapMemoryUsed},
+        #{swapMemoryTotal},
+        #{memoryUsed},
+        #{memoryTotal},
+        #{swapMemoryUsage},
+        #{memoryUsage},
+        #{diskUsed},
+        #{diskTotal},
+        #{diskUsage},
+        #{ip})
+    </insert>
+
+    <select id="getSystemInfoRecords" resultType="com.ddpzp.xiaogu_word.po.system.SystemInformation">
+        SELECT * FROM system_info
+        <where>
+            <if test="ip!=null and ip!=''">
+                ip=#{ip}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getLatestSystemInfoRecord" resultType="com.ddpzp.xiaogu_word.po.system.SystemInformation">
+        SELECT * FROM system_info
+        WHERE ip=#{ip}
+        ORDER BY create_time DESC limit 1
+    </select>
+
+    <delete id="deleteRecordBeforeDate">
+        delete from system_info where ip=#{ip} and create_time &lt; #{beforeDate}
+    </delete>
+
+</mapper>
