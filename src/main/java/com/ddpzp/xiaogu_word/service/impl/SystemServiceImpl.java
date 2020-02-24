@@ -66,10 +66,8 @@ public class SystemServiceImpl implements SystemService {
             return;
         }
         try {
-            log.info("Start collect system info...");
             SystemInformation systemInformation = collectSystemInfo();
             systemInfoMapper.addSystemInfo(systemInformation);
-            log.info("End collect system info...");
         } catch (Exception e) {
             log.error("Add system info failed !", e);
         }
