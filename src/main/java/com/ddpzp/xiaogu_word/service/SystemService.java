@@ -1,6 +1,7 @@
 package com.ddpzp.xiaogu_word.service;
 
 import com.ddpzp.xiaogu_word.exception.GbException;
+import com.ddpzp.xiaogu_word.model.system.SystemInfoModel;
 import com.ddpzp.xiaogu_word.po.system.SystemInformation;
 import com.ddpzp.xiaogu_word.po.system.SystemConfig;
 
@@ -35,7 +36,7 @@ public interface SystemService {
      *
      * @return
      */
-    SystemInformation getLatestSystemInfoRecord();
+    SystemInfoModel getLatestSystemInfoRecord();
 
     /**
      * 根据指定ip获取监控配置

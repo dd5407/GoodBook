@@ -3,6 +3,7 @@ package com.ddpzp.xiaogu_word.service.impl;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.mapper.system.SystemConfigMapper;
 import com.ddpzp.xiaogu_word.mapper.system.SystemInfoMapper;
+import com.ddpzp.xiaogu_word.model.system.SystemInfoModel;
 import com.ddpzp.xiaogu_word.po.system.SystemConfig;
 import com.ddpzp.xiaogu_word.po.system.SystemInformation;
 import com.ddpzp.xiaogu_word.service.SystemService;
@@ -62,7 +63,6 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public void addSystemInfo() {
         if (!enableCollection()) {
-            log.info("Skip collect system info!");
             return;
         }
         try {
@@ -91,8 +91,9 @@ public class SystemServiceImpl implements SystemService {
      * @return
      */
     @Override
-    public SystemInformation getLatestSystemInfoRecord() {
-        return systemInfoMapper.getLatestSystemInfoRecord(SystemUtil.getLocalIp());
+    public SystemInfoModel getLatestSystemInfoRecord() {
+        SystemInformation latestSystemInfoRecord = systemInfoMapper.getLatestSystemInfoRecord(SystemUtil.getLocalIp());
+        return SystemInfoModel.poToModel(latestSystemInfoRecord);
     }
 
     /**

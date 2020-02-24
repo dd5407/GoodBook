@@ -1,6 +1,7 @@
 package com.ddpzp.xiaogu_word.controller;
 
 import com.ddpzp.xiaogu_word.model.JsonResult;
+import com.ddpzp.xiaogu_word.model.system.SystemInfoModel;
 import com.ddpzp.xiaogu_word.po.system.SystemInformation;
 import com.ddpzp.xiaogu_word.service.SystemService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class SystemController extends BaseController {
     @ResponseBody
     public JsonResult getLatestSystemInfoRecord() {
         try {
-            SystemInformation latestSystemInfoRecord = systemService.getLatestSystemInfoRecord();
+            SystemInfoModel latestSystemInfoRecord = systemService.getLatestSystemInfoRecord();
             return JsonResult.success(latestSystemInfoRecord);
         } catch (Exception e) {
             log.error("Get latest system info error!", e);
