@@ -1,9 +1,11 @@
 package com.ddpzp.xiaogu_word.model.system;
 
+import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.po.system.SystemInformation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
 
@@ -18,43 +20,43 @@ public class SystemInfoModel {
     /**
      * cpu使用率
      */
-    private String cpuUsage;
+    private Double cpuUsage;
     /**
      * 已使用虚拟内存
      */
-    private String swapMemoryUsed;
+    private Double swapMemoryUsed;
     /**
      * 总虚拟内存
      */
-    private String swapMemoryTotal;
+    private Double swapMemoryTotal;
     /**
      * 已使用内存
      */
-    private String memoryUsed;
+    private Double memoryUsed;
     /**
      * 总内存
      */
-    private String memoryTotal;
+    private Double memoryTotal;
     /**
      * 虚拟内存使用率
      */
-    private String swapMemoryUsage;
+    private Double swapMemoryUsage;
     /**
      * 内存使用率
      */
-    private String memoryUsage;
+    private Double memoryUsage;
     /**
      * 已使用磁盘
      */
-    private String diskUsed;
+    private Double diskUsed;
     /**
      * 总磁盘容量
      */
-    private String diskTotal;
+    private Double diskTotal;
     /**
      * 磁盘使用率
      */
-    private String diskUsage;
+    private Double diskUsage;
     /**
      * 记录时间
      */
@@ -65,28 +67,40 @@ public class SystemInfoModel {
      */
     private String ip;
 
-    public static SystemInfoModel poToModel(SystemInformation systemInformation) {
+    public static SystemInfoModel poToModel(SystemInformation systemInformation) throws GbException {
         SystemInfoModel systemInfoModel = new SystemInfoModel();
-        systemInfoModel.setCpuUsage(doubleToString(systemInformation.getCpuUsage()));
+        systemInfoModel.setCpuUsage(setDoubleDigits(systemInformation.getCpuUsage(),2));
         systemInfoModel.setMemoryUsed(conversSize(systemInformation.getMemoryUsed(), "MB"));
         systemInfoModel.setMemoryTotal(conversSize(systemInformation.getMemoryTotal(), "MB"));
-        systemInfoModel.setMemoryUsage(doubleToString(systemInformation.getMemoryUsage()));
+        systemInfoModel.setMemoryUsage(setDoubleDigits(systemInformation.getMemoryUsage(),2));
         systemInfoModel.setSwapMemoryUsed(conversSize(systemInformation.getSwapMemoryUsed(), "MB"));
         systemInfoModel.setSwapMemoryTotal(conversSize(systemInformation.getSwapMemoryTotal(), "MB"));
-        systemInfoModel.setSwapMemoryUsage(doubleToString(systemInformation.getSwapMemoryUsage()));
+        systemInfoModel.setSwapMemoryUsage(setDoubleDigits(systemInformation.getSwapMemoryUsage(),2));
         systemInfoModel.setDiskUsed(conversSize(systemInformation.getDiskUsed(), "GB"));
         systemInfoModel.setDiskTotal(conversSize(systemInformation.getDiskTotal(), "GB"));
-        systemInfoModel.setDiskUsage(doubleToString(systemInformation.getDiskUsage()));
+        systemInfoModel.setDiskUsage(setDoubleDigits(systemInformation.getDiskUsage(),2));
         systemInfoModel.setCreateTime(systemInformation.getCreateTime());
         return systemInfoModel;
     }
 
-    private static String doubleToString(Double doubleVal) {
-        if (doubleVal == null) {
+    private static String doubleToString(Double doubleValue) {
+        if (doubleValue == null) {
             return null;
         }
         DecimalFormat df = new DecimalFormat("#.##");
-        return df.format(doubleVal);
+        return df.format(doubleValue);
+    }
+
+    private static double setDoubleDigits(Double originValue, Integer digitsSize) throws GbException {
+        if (originValue == null) {
+            throw new GbException("originValue is null!");
+        }
+        if (digitsSize == null) {
+            digitsSize = 2;
+        }
+        BigDecimal bigDecimal = new BigDecimal(originValue);
+        double newVal = bigDecimal.setScale(digitsSize, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return newVal;
     }
 
     /**
@@ -95,9 +109,9 @@ public class SystemInfoModel {
      * @param byteSize
      * @return
      */
-    private static String conversSize(Long byteSize, String type) {
+    private static double conversSize(Long byteSize, String type) throws GbException {
         if (byteSize == null) {
-            return null;
+            throw new GbException("byteSize is null！");
         }
         double size;
         if ("GB".equalsIgnoreCase(type)) {
@@ -105,9 +119,9 @@ public class SystemInfoModel {
         } else if ("MB".equalsIgnoreCase(type)) {
             size = (double) byteSize / 1024 / 1024;
         } else {
-            return String.valueOf(byteSize);
+            size = byteSize;
         }
 
-        return doubleToString(size);
+        return setDoubleDigits(size, 2);
     }
 }

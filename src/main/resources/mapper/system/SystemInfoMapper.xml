@@ -35,6 +35,9 @@
             </if>
         </where>
         ORDER BY create_time DESC
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
     </select>
 
     <select id="getLatestSystemInfoRecord" resultType="com.ddpzp.xiaogu_word.po.system.SystemInformation">

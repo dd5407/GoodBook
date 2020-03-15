@@ -22,9 +22,13 @@ public interface SystemInfoMapper {
      * 根据ip获取监控记录，ip为空，则获取所有
      *
      * @param ip
+     * @param startNum
+     * @param pageSize
      * @return
      */
-    List<SystemInformation> getSystemInfoRecords(@Param("ip") String ip);
+    List<SystemInformation> getSystemInfoRecords(@Param("ip") String ip,
+                                                 @Param("startNum") Integer startNum,
+                                                 @Param("pageSize") Integer pageSize);
 
     /**
      * 根据ip获取最近一次监控数据

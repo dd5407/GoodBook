@@ -1,0 +1,12 @@
+1.@Documented注解。默认情况下，javadoc是不包含注解的，如果在声明注解时加了@Documented，则注解的信息会被javadoc记录。
+2.@Retention注解。注解保留的位置。它的值有三种：
+RetentionPolicy.SOURCE，表示注解只在源码中出现，不会在编译时会忽略，class字节码文件中不会包含。使用场景：使用注解的变量代替枚举类，可以减少内存占用。编译后，注解变量会被直接替换为值（未验证）。
+RetentionPolicy.CLASS，表示注解编译时默认保留，会出现在class字节码文件中，但jvm运行时会忽略，运行时无法获得注解。使用场景：自定义注解处理器相关，具体用法待补充。
+RetentionPolicy.RUNTIME，表示注解在jvm运行时也会保留，可以使用反射读取注解。使用场景：注解需要通过反射读取时使用。如缓存注解、日志注解等。
+3.javap是jdk自带的反编译工具，javap xxx.class可以对字节码文件进行反编译，javap -p xxx.class可以同时显示private方法。
+4.enum实际上是一个java类，并且是final class，不可继承。字节码中，该类继承了java.lang.Enum类，所以不能被其他类继承。枚举值在字节码文件中被final修饰，不可变，同时是public。字节码中还包含了一个private的空构造方法，所以不能被用户实例化。
+5.@annotation是AspectJ切点函数，用法为@Around("@annotation(目标注解的全限定名)"),该函数可以将注解作为切点。
+6.从ProceedingJoinPoint获取Method对象。pjp.getSignature()直接getName只能获取方法名。需要((MethodSignature)pjp.getSignature()).getMethod获取method对象，((MethodSignature)pjp.getSignature()).getReturnType()获取返回值。
+7.oshi框架可以收集系统信息，如CPU使用率、内存使用率、磁盘使用率、网络、进程、usb设备等，且不用在目标服务器做任何植入，sigar框架需要在目标服务器放置lib和dll文件。
+8.SpringMVC中，不写@RequestParam相当于@RequestParam(required=false)，@RequestParam默认为required=true。
+9.vim输入:noh取消高亮显示。

@@ -1,0 +1,54 @@
+1.link标签，属性为rel，不是ref。
+2.springMVC中，开发环境，接口return的路径不区分大小写，而打包后运行区分大小写（大小写不一致会导致找不到页面）。
+3.thymeleaf严格遵循html5，标签必须有头有尾。
+4.pom中引入springboot的test，编译时会做启动测试，测试成功后编译打包，test包不会打进jar包。（这个不是坑，仅做记录）
+5.项目首次启动，用户首次登录时，会获取sessionID，而sessionID默认使用/dev/random生成。如果服务器系统的熵不足，会出现阻塞，用户请求在生成sessionID之后才会渲染页面，此过程可能持续数分钟。启动时，可以添加参数-Djava.security.egd=file:/dev/./urandom，指定随机数设备为/dev/urandom，该随机数设备不会发生阻塞。
+6.springMVC返回页面路径时，前面不能加/，return "home"而不是return "/home"。
+7.mybatis中，参数为String,且在xml中的条件标签（如if）中使用该参数时，即使只有一个参数，也会报错，其他类型不会，没在标签中使用则不会报错。报错为There is no getter for property named 'username' in 'class java.lang.String'。需要在mapper接口中加上@Param注解。
+8.thymeleaf在js中获取modal中的值，需要使用内联。
+<script th:inline="javascript">
+    var words=[[${words}]];
+</script>
+9.js中，取整运算为parseInt(10/3)。
+10.js中，for循环中多个条件时，逗号分隔等同于或，如果是且的关系，用&&。
+11.链接与iframe绑定时，target对应的是iframe的name。
+12.debug时遇到一问题，sql过滤条件为中文，过滤后应该有数据，但返回无数据。打开mybatis的sql打印，发现sql也没问题，navicat执行sql可以查到数据。由于英文过滤正常，判断应该是字符集问题。数据源配置的url中指定字符集为utf-8后（url:xxx?characterEncoding=utf-8），问题解决。不指定字符集时，数据库连接的字符集应该和客户端字符集有关，放到服务器上运行，应该无此问题，但指定字符集最保险。
+13.ajax请求，参数中有数组时，需要添加tranditional:true，否则后台获取到的值为null。假设参数为arr=[1,2,3]，不加参数时arr[]=1&arr[]=2&arr[]=3，加了参数，arr=1&arr=2&arr=3。
+14.mybatis传数组参数，进行foreach遍历时，单个参数，不加@Param注解时，collection写参数名会报错。应该指定collections=array，或接口加上@Param注解。
+15.js中使用change监听input，只在失去焦点时生效，且只有鼠标或键盘能触发，js触发无效。如果要实时监听input的变化，可以在js中使用”input propertychange“进行监听，它同时绑定了input和propertychange。input是html5的事件，在IE9以下不生效，且只有value改变时触发事件，属性改变不触发，propertychange是IE专属事件，非IE不生效，属性和值改变都会触发事件。在标签中，两个属性为oninput和onpropertychange。
+16.隐藏select下拉选框时，用hidden="hidden"无效，需要使用style="display:none"，jquery控制该属性隐藏、显示的方式为$('xxx').hide()和$('xxx').show()。hidden是html5新属性，display为css属性。
+17.bootstrap栅格系统，向上覆盖，向下不覆盖，如col-lg-8，大屏里生效，在小屏幕显示时并不生效，而col-xs-8在无其他class时，在小屏大屏都生效。
+18.用$.session.get()方式获取session中的值，只适用于用$.session.set()方法设置的session值，后台设置的值，前台取的结果为undefined，只能通过后台传回。
+19.模态框打开时，jquery-confirm的弹出框中的input会无法编辑，原因是Modal.js和Jquery-confirm.js在显示时冲突，先关闭模态框即可。
+20.当ajax请求需要把请求结果作为函数的返回值，根据返回值判断，进行某些操作时，不能使用异步请求，异步请求只要请求结束，会立即走ajax以后的逻辑，而ajax内success和error的逻辑在返回结果之后才会执行，导致函数返回的值是初始值，并不是请求结果。ajax需要加上async: false参数，即为同步请求，只有在返回结果时才会往下走。
+var result=function demo(){
+var isSuccess=false;
+$.ajax({
+...
+    success:function(){isSuccess=true;},
+    error:function(){}
+});
+return isSuccess;
+}
+此代码中，ajax请求一发出，就会return isSuccess。
+21.java进程自动挂掉的问题。vultr的虚机经常会出现进程挂掉的问题，查看/var/log/messages文件，发现其中有oom，被系统kill了。jps查看进程（已手动启动），根据进程id，top -p PID查看进程的内存占用情况，发现空闲情况下，内存占用有41%。free -h查看487M内存已使用384M。结论是虚机规格太小，内存不够，一不小心就会触发系统oom killer。kernel中oom的机制：VM里分配不出更多的page时，就会触发oom，它会调用__out_of_memory()函数，该函数会先调用select_bad_process选择一个要kill的进程，再调用oom_kill_process杀死select出来的进程。select_bad_process函数扫描整个进程列表，为每个进程计算一个score，score最高的会被选中。可以通过设置/proc/<pid>/oom_adj来调整oom_adj的值，该值会影响分数计算，oom_adj范围是[-17, 15]，设为OOM_DISABLE（-17）的进程不会被oom。但建议还是通过扩容来解决问题，不要死撑。
+Sep 18 00:08:45 vultr kernel: Out of memory: Kill process 9211 (java) score 443 or sacrifice child
+Sep 18 00:08:45 vultr kernel: Killed process 9211 (java) total-vm:2185956kB, anon-rss:227232kB, file-rss:0kB, shmem-rss:0kB
+22.创建swap分区缓解内存不足问题。
+场景：内存512M，启动项目后，内存使用率占用近90%，稍微增加一些操作，就会触发系统oom。free -h查看内存，发现swap为0。
+解决方法：创建swap分区，利用虚拟内存缓解压力。
+操作步骤：
+1）创建swap文件，if为空字符设备，读取/dev/zero可以提供无限的空字符(NULL, ASCII NUL, 0x00)，创建文件时，使用该设备进行输入，占用指定大小的空间，of为swap文件路径，bs为块大小，count为块数量。
+dd if=/dev/zero of=/var/swap bs=1M count=1024
+2）设置swap分区。
+mkswap /var/swap
+3）开启swap分区。
+swapon /var/swap
+4）设置开机启动swap分区。
+vim /etc/fstab
+文件中加入
+/var/swap swap swap defaults 0 0
+5）free -h查看内存情况，完成。
+23.jquery实现搜索框联想，使用autocomplete函数。
+24.springboot项目打包时跳过test，在pom的properties标签中加入<skipTests>true</skipTests>。
+25.苹果safari浏览器不支持yyyy-mm-dd格式的date，会造成时间NaN，需要将-替换为/，time.replace(/-/g, "/"),/g代表匹配全部，不加只匹配第一个。

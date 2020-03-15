@@ -27,16 +27,19 @@ public interface SystemService {
     /**
      * 获取本机系统信息
      *
+     * @param page
+     * @param pageSize
      * @return
+     * @throws GbException
      */
-    List<SystemInformation> getLocalSystemInfoRecords();
+    List<SystemInfoModel> getLocalSystemInfoRecords(Integer page, Integer pageSize) throws GbException;
 
     /**
      * 获取本机最近一次监控数据
      *
      * @return
      */
-    SystemInfoModel getLatestSystemInfoRecord();
+    SystemInfoModel getLatestSystemInfoRecord() throws GbException;
 
     /**
      * 根据指定ip获取监控配置

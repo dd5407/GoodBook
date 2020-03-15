@@ -2,7 +2,6 @@ package com.ddpzp.xiaogu_word.controller;
 
 import com.ddpzp.xiaogu_word.model.JsonResult;
 import com.ddpzp.xiaogu_word.model.system.SystemInfoModel;
-import com.ddpzp.xiaogu_word.po.system.SystemInformation;
 import com.ddpzp.xiaogu_word.service.SystemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,11 @@ public class SystemController extends BaseController {
     @Autowired
     private SystemService systemService;
 
+    @GetMapping("page/monitor")
+    public String monitorPage() {
+        return "systemMonitor";
+    }
+
     @GetMapping("latestInfo")
     @ResponseBody
     public JsonResult getLatestSystemInfoRecord() {
@@ -38,9 +42,12 @@ public class SystemController extends BaseController {
 
     @GetMapping("infos")
     @ResponseBody
-    public JsonResult getSystemInfoRecords(){
+    public JsonResult getSystemInfoRecords(Integer page, Integer pageSize) {
+        if (page == null ^ pageSize == null) {
+            return JsonResult.error("²ÎÊý´íÎó");
+        }
         try {
-            List<SystemInformation> records = systemService.getLocalSystemInfoRecords();
+            List<SystemInfoModel> records = systemService.getLocalSystemInfoRecords(page, pageSize);
             return JsonResult.success(records);
         } catch (Exception e) {
             log.error("Get system info records error!", e);

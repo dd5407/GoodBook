@@ -19,7 +19,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OSFileStore;
 import oshi.software.os.OperatingSystem;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -76,11 +76,23 @@ public class SystemServiceImpl implements SystemService {
     /**
      * 获取本机的监控记录
      *
+     * @param page
+     * @param pageSize
      * @return
+     * @throws GbException
      */
     @Override
-    public List<SystemInformation> getLocalSystemInfoRecords() {
-        return systemInfoMapper.getSystemInfoRecords(SystemUtil.getLocalIp());
+    public List<SystemInfoModel> getLocalSystemInfoRecords(Integer page, Integer pageSize) throws GbException {
+        Integer startNum = null;
+        if (page != null) {
+            startNum = (page - 1) * pageSize;
+        }
+        List<SystemInformation> records = systemInfoMapper.getSystemInfoRecords(SystemUtil.getLocalIp(), startNum, pageSize);
+        List<SystemInfoModel> models = new ArrayList<>();
+        for (SystemInformation record : records) {
+            models.add(SystemInfoModel.poToModel(record));
+        }
+        return models;
     }
 
     /**
@@ -89,7 +101,7 @@ public class SystemServiceImpl implements SystemService {
      * @return
      */
     @Override
-    public SystemInfoModel getLatestSystemInfoRecord() {
+    public SystemInfoModel getLatestSystemInfoRecord() throws GbException {
         SystemInformation latestSystemInfoRecord = systemInfoMapper.getLatestSystemInfoRecord(SystemUtil.getLocalIp());
         return SystemInfoModel.poToModel(latestSystemInfoRecord);
     }
@@ -101,7 +113,7 @@ public class SystemServiceImpl implements SystemService {
      */
     @Override
     public List<SystemInformation> getAllSystemInfoRecords() {
-        return systemInfoMapper.getSystemInfoRecords(null);
+        return systemInfoMapper.getSystemInfoRecords(null, null, null);
     }
 
     /**
@@ -210,7 +222,7 @@ public class SystemServiceImpl implements SystemService {
 
         SystemInformation systemInformation = new SystemInformation();
         systemInformation.setIp(SystemUtil.getLocalIp());
-        systemInformation.setCpuUsage(systemCpuLoad);
+        systemInformation.setCpuUsage(systemCpuLoad * 100);
 
         systemInformation.setMemoryUsed(memoryUsed);
         systemInformation.setMemoryTotal(memoryTotal);

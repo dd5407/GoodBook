@@ -16,7 +16,7 @@ $(function () {
                 console.log(item);
                 $('#randomModal .modal-body p').html("<h1 style='text-align: center;color: red'>" + item.name + "</h1>");
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
                 toastr.error(textStatus);
                 toastr.error(errorThrown);
                 $('#randomModal .modal-body p').html("<h1 style='text-align: center;color: gray'>空气突然宁静。。。</h1>");
