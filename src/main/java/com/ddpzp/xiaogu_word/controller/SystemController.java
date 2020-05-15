@@ -44,7 +44,7 @@ public class SystemController extends BaseController {
     @ResponseBody
     public JsonResult getSystemInfoRecords(Integer page, Integer pageSize) {
         if (page == null ^ pageSize == null) {
-            return JsonResult.error("²ÎÊı´íÎó");
+            return JsonResult.error("å‚æ•°é”™è¯¯");
         }
         try {
             List<SystemInfoModel> records = systemService.getLocalSystemInfoRecords(page, pageSize);
