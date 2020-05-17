@@ -8,6 +8,7 @@ import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
 import lombok.extern.slf4j.Slf4j;
@@ -54,20 +55,20 @@ public class IdiomCollection {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setTimeout(30000);
         for (String url : urls) {
-            parseEachUrl(webClient, url);
+            parseSearchUrl(webClient, url);
         }
         webClient.close();
         log.info("Parse baidu complete!");
     }
 
     /**
-     * 使用htmlUnit解析每个url
+     * 使用htmlUnit解析每个url（百度搜索页）
      *
      * @param url
      */
-    private void parseEachUrl(WebClient webClient, String url) {
+    private void parseSearchUrl(WebClient webClient, String url) {
         try {
-            log.info("Parse url start! url={}", url);
+            log.info("Parse baidu search url start! url={}", url);
             //先使用httpUnit获取页面（以便点击按钮动态js翻页，jsoup只能获取静态页面，不能点击按钮进行翻页）
             HtmlPage page = webClient.getPage(url);
             webClient.waitForBackgroundJavaScript(30000);
@@ -80,14 +81,14 @@ public class IdiomCollection {
                 //使用jsoup解析静态页面，遍历当页的成语
                 parseEachPage(doc);
                 //获取下一页按钮->span标签
-                Object nextPageBtn = page.getElementById("content_left")
-                        .getFirstElementChild().getElementsByTagName("div").get(0)
-                        .getFirstElementChild().getLastElementChild().getLastElementChild()
-                        .getFirstElementChild().getLastElementChild();
-                //没有下一页按钮，遍历结束，退出
-                if (nextPageBtn == null) {
+                DomElement opuiPage = page.getElementById("content_left")
+                        .getElementsByTagName("div").get(0).getElementsByTagName("div").get(0)
+                        .getFirstElementChild().getLastElementChild().getLastElementChild().getFirstElementChild();
+                // 没有页码栏，只有一页，遍历结束，退出
+                if (opuiPage == null) {
                     break;
                 }
+                DomElement nextPageBtn = opuiPage.getLastElementChild();
                 HtmlSpan span = (HtmlSpan) nextPageBtn;
                 //最后一页
                 if (StringUtils.equals(span.getAttribute("style"), "visibility:hidden;")) {
@@ -114,10 +115,10 @@ public class IdiomCollection {
         Elements idiomLinks = doc.select("#content_left "
                 + "div[class=op_exactqa_itemsArea c-row  c-gap-bottom-small] "
                 + ".op_exactqa_item a");
-        //遍历a标签，取到每个标签中的title（成语）、链接（成语的搜索链接）
+        //遍历a标签，取到每个标签中的title（成语）、链接（成语详情页链接）
         for (Element a : idiomLinks) {
             Idiom idiom = new Idiom();
-            //搜索链接（内链），该链接以该成语为搜索词，进行搜索
+            //成语详情页链接
             String href = a.attr("href");
             //标题为成语
             String word = a.attr("title").trim();
@@ -125,11 +126,9 @@ public class IdiomCollection {
                 log.warn("[{}]不是四字成语，不录入！", word);
                 continue;
             }
-            //内链需要加上域名，组成完整链接
-            href = "https://www.baidu.com" + href;
-            log.info("[搜索链接] word={}, href={}", word, href);
-            //进入成语搜索页获取成语释义
-            gotoLinkForIdiomMeans(href, idiom);
+            log.info("[成语详情页链接] word={}, href={}", word, href);
+            //进入成语详情页获取成语释义
+            parseBaiduHanyu(idiom, href);
             idiom.setWord(word);
             try {
                 gameService.addIdiom(idiom);
@@ -142,55 +141,39 @@ public class IdiomCollection {
     }
 
     /**
-     * 通过成语链接，进入成语搜索页获取释义
-     *
-     * @param href  成语的搜索链接
-     * @param idiom
-     * @return
-     */
-    private void gotoLinkForIdiomMeans(String href, Idiom idiom) {
-        try {
-            Document doc = Jsoup.connect(href).get();
-            //获取成语的百度汉语链接
-            String baiduHanyuHref = doc.select("#1 p[class=c-gap-top-small c-gap-bottom-small] a").attr("href");
-            if (StringUtils.isBlank(baiduHanyuHref)) {
-                log.info("百度汉语链接为空！");
-                return;
-            }
-            log.info("[百度汉语链接] href={}", baiduHanyuHref);
-            //解析百度汉语页面，获取注音拼音和释义放入idiom
-            parseBaiduHanyu(idiom, baiduHanyuHref);
-        } catch (Exception e) {
-            log.error("Parse link failed! href={}", href);
-        }
-    }
-
-    /**
-     * 解析百度汉语页面，获取释义和注音拼音
+     * 解析百度汉语成语详情页面，获取释义和注音拼音
      *
      * @param idiom
-     * @param baiduHanyuHref
+     * @param idiomDetailHref
      * @throws IOException
      */
-    private void parseBaiduHanyu(Idiom idiom, String baiduHanyuHref) throws IOException {
-        //进入百度汉语
-        Document baiduHanyuDoc = Jsoup.connect(baiduHanyuHref).get();
-        //注音拼音
-        String phoneticPinyin = baiduHanyuDoc.select("#idiom-body div[class=content means imeans] dt").text().trim();
-        if (StringUtils.isEmpty(phoneticPinyin)) {
-            phoneticPinyin = baiduHanyuDoc.select("#basicmean-wrapper .pinyin").text().trim();
+    private void parseBaiduHanyu(Idiom idiom, String idiomDetailHref) {
+        if (StringUtils.isEmpty(idiomDetailHref)) {
+            log.warn("成语详情页链接为空！");
+            return;
         }
-        //成语完整释义
-        String idiomMeans = baiduHanyuDoc.select("#idiom-body div[class=content means imeans] dd p").text().trim();
-        if (StringUtils.isEmpty(idiomMeans)) {
-            idiomMeans = baiduHanyuDoc.select("#basicmean-wrapper dd p").text().trim();
+        try {
+            //进入百度汉语
+            Document baiduHanyuDoc = Jsoup.connect(idiomDetailHref).get();
+            //注音拼音
+            String phoneticPinyin = baiduHanyuDoc.select("#idiom-body div[class=content means imeans] dt").text().trim();
+            if (StringUtils.isEmpty(phoneticPinyin)) {
+                phoneticPinyin = baiduHanyuDoc.select("#basicmean-wrapper .pinyin").text().trim();
+            }
+            //成语完整释义
+            String idiomMeans = baiduHanyuDoc.select("#idiom-body div[class=content means imeans] dd p").text().trim();
+            if (StringUtils.isEmpty(idiomMeans)) {
+                idiomMeans = baiduHanyuDoc.select("#basicmean-wrapper dd p").text().trim();
+            }
+            if (StringUtils.isEmpty(idiomMeans)) {
+                String baikeMeans = getBaikeMeansWithoutDefinition(idiomDetailHref);
+                idiomMeans = StringUtils.isBlank(baikeMeans) ? "暂无" : baikeMeans;
+            }
+            idiom.setPhoneticPinyin(phoneticPinyin);
+            idiom.setMeans(idiomMeans);
+        } catch (Exception e) {
+            log.error("Parse idiom detail link failed! href={}", idiomDetailHref);
         }
-        if (StringUtils.isEmpty(idiomMeans)) {
-            String baikeMeans = getBaikeMeansWithoutDefinition(baiduHanyuHref);
-            idiomMeans = StringUtils.isBlank(baikeMeans) ? "暂无" : baikeMeans;
-        }
-        idiom.setPhoneticPinyin(phoneticPinyin);
-        idiom.setMeans(idiomMeans);
     }
 
     /**

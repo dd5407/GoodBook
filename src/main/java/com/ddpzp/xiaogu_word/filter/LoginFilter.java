@@ -3,6 +3,7 @@ package com.ddpzp.xiaogu_word.filter;
 import com.alibaba.fastjson.JSON;
 import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.model.JsonResult;
+import com.ddpzp.xiaogu_word.util.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +33,7 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String uri = httpServletRequest.getRequestURI();
-        log.info("request ip:[{}],uri:[{}]", request.getRemoteAddr(), uri);
+        log.info("request ip:[{}],uri:[{}]", SystemUtil.getUserIp(httpServletRequest), uri);
         //跳过登录
         if ("/gu/user/login".equals(uri)) {
             chain.doFilter(request, response);

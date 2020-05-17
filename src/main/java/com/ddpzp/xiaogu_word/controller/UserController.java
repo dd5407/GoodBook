@@ -4,6 +4,7 @@ import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.model.JsonResult;
 import com.ddpzp.xiaogu_word.po.user.LoginRecord;
 import com.ddpzp.xiaogu_word.service.UserService;
+import com.ddpzp.xiaogu_word.util.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UserController extends BaseController {
         /* 记录登录日志 */
         String ip = null;
         try {
-            ip = request.getRemoteAddr();
+            ip = SystemUtil.getUserIp(request);
             userService.addLoginRecord(username, ip);
         } catch (Exception e) {
             log.error("Add login record failed! username={},ip={}", username, ip);

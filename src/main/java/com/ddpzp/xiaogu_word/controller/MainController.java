@@ -1,5 +1,6 @@
 package com.ddpzp.xiaogu_word.controller;
 
+import com.ddpzp.xiaogu_word.util.SystemUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,7 @@ public class MainController {
     @RequestMapping("/")
     public String index(Model model) {
         model.addAttribute("title", "欢迎使用Good Book!");
-        log.info("welcome! ip:[{}]",request.getRemoteAddr());
+        log.info("welcome! ip:[{}]", SystemUtil.getUserIp(request));
         return "home";
     }
 }
