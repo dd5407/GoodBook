@@ -448,11 +448,12 @@ public class GameServiceImpl implements GameService {
      */
     private void addSpiderRecord() {
         try {
-            Integer IdiomCount = idiomMapper.countIdiom();
+            Integer idiomCount = idiomMapper.countIdiom();
             SpiderRecord record = new SpiderRecord();
-            record.setRecordNum(IdiomCount);
+            record.setRecordNum(idiomCount);
             record.setRecordType(Constants.SPIDER_RECORD_TYPE_IDIOM);
             spiderRecordMapper.addRecord(record);
+            log.info("Spider record added! type:{}, count:{}", record.getRecordType(), idiomCount);
         } catch (Exception e) {
             log.error("Add spider record failed!", e);
         }
