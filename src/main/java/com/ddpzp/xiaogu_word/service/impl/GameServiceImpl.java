@@ -1,11 +1,13 @@
 package com.ddpzp.xiaogu_word.service.impl;
 
 import com.ddpzp.xiaogu_word.common.Constants;
+import com.ddpzp.xiaogu_word.common.Language;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.mapper.game.GuessIdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.game.IdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.game.LotteryMapper;
 import com.ddpzp.xiaogu_word.mapper.spider.SpiderRecordMapper;
+import com.ddpzp.xiaogu_word.model.game.RandomResult;
 import com.ddpzp.xiaogu_word.po.SpiderRecord;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
@@ -14,6 +16,7 @@ import com.ddpzp.xiaogu_word.po.game.LotteryItem;
 import com.ddpzp.xiaogu_word.service.GameService;
 import com.ddpzp.xiaogu_word.util.IdiomCollection;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
+import com.github.javafaker.Faker;
 import com.hankcs.hanlp.HanLP;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +25,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dd
@@ -41,6 +46,10 @@ public class GameServiceImpl implements GameService {
     private GuessIdiomMapper guessIdiomMapper;
     @Autowired
     private LotteryMapper lotteryMapper;
+    /**
+     * 随机生成器，懒加载
+     */
+    private Map<Language, Faker> fakerMap = new HashMap<>();
 
     @Override
     public List<Frog> countFrog(Integer startNum, Integer size) {
@@ -408,6 +417,22 @@ public class GameServiceImpl implements GameService {
         LotteryItem lotteryItem = lotteryMapper.getLotteryItemByIndex(username, randomIndex);
         log.info("生成[0-{}]随机数：[{}]，抽奖选项名：[{}]", total, randomIndex, lotteryItem.getName());
         return lotteryItem;
+    }
+
+    @Override
+    public RandomResult randomPersonName(Language language) {
+        Faker faker = fakerMap.get(language);
+        if (faker == null) {
+            faker = new Faker(language.getLocale());
+            fakerMap.put(language, faker);
+            log.info("Init {} Faker", language.getName());
+        }
+        String name = faker.name().fullName();
+        log.info("生成随机人名：{}，language:{}", name, language.getName());
+
+        RandomResult result = new RandomResult();
+        result.setName(name);
+        return result;
     }
 
     /**

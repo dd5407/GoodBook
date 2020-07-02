@@ -1,6 +1,8 @@
 package com.ddpzp.xiaogu_word.service;
 
+import com.ddpzp.xiaogu_word.common.Language;
 import com.ddpzp.xiaogu_word.exception.GbException;
+import com.ddpzp.xiaogu_word.model.game.RandomResult;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
@@ -184,8 +186,16 @@ public interface GameService {
     /**
      * 抽奖
      *
-     * @return
      * @param username
+     * @return
      */
     LotteryItem lottery(String username) throws GbException;
+
+    /**
+     * 随机生成人名
+     *
+     * @param language 生成什么语言的人名
+     * @return
+     */
+    RandomResult randomPersonName(Language language);
 }

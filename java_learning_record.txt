@@ -10,3 +10,4 @@ RetentionPolicy.RUNTIME，表示注解在jvm运行时也会保留，可以使用
 7.oshi框架可以收集系统信息，如CPU使用率、内存使用率、磁盘使用率、网络、进程、usb设备等，且不用在目标服务器做任何植入，sigar框架需要在目标服务器放置lib和dll文件。
 8.SpringMVC中，不写@RequestParam相当于@RequestParam(required=false)，@RequestParam默认为required=true。
 9.vim输入:noh取消高亮显示。
+10.javaFaker是一个好玩的开源随机伪数据生成器，开源随机生成人名、地址等数据。

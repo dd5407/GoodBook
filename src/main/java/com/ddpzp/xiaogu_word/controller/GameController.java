@@ -3,8 +3,10 @@ package com.ddpzp.xiaogu_word.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ddpzp.xiaogu_word.common.Constants;
+import com.ddpzp.xiaogu_word.common.Language;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.model.JsonResult;
+import com.ddpzp.xiaogu_word.model.game.RandomResult;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
@@ -94,6 +96,16 @@ public class GameController extends BaseController {
     @GetMapping("/page/idiom")
     public String idiomPage() {
         return "idiom";
+    }
+
+    /**
+     * 跳转随机生成器页面
+     *
+     * @return
+     */
+    @GetMapping("/page/randomData")
+    public String randomPage() {
+        return "randomData";
     }
 
     @GetMapping("/randomIdiom")
@@ -492,6 +504,38 @@ public class GameController extends BaseController {
             return JsonResult.error(ge.getMessage());
         } catch (Exception e) {
             log.error("抽奖失败!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 随机生成
+     * 1.人名
+     *
+     * @param type
+     * @return
+     */
+    @GetMapping("random")
+    @ResponseBody
+    public JsonResult random(String type) {
+        if (StringUtils.isBlank(type)) {
+            log.error("随机生成器参数为空！");
+            return JsonResult.error("参数错误！");
+        }
+        log.info("开始生成随机数据。type:{},username:{}", type, getUsername(session));
+        try {
+            RandomResult result = null;
+            switch (type) {
+                case "person":
+                    result = gameService.randomPersonName(Language.CHINESE);
+                    break;
+                default:
+                    log.error("随机生成器，非法参数。type:{}", type);
+                    break;
+            }
+            return JsonResult.success(result);
+        } catch (Exception e) {
+            log.error("随机生成失败!", e);
             return JsonResult.error(e.getMessage());
         }
     }

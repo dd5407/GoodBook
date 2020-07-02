@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>随机生成器</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/toastr.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/game/randomData.css}"/>
+    <script type="text/javascript" th:src="@{/js/common/jquery-3.4.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/toastr.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/game/randomData.js}"></script>
+</head>
+<body>
+<div class="page-header">
+    <h1 align="center">
+        <small>随机生成器</small>
+    </h1>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 col-xs-4">
+            <button id="randomPersonNameBtn" class="btn btn-primary">生成人名</button>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <div id="resultPanel" class="panel panel-info" hidden="hidden">
+                <div class="panel-heading">
+                    <h3 id="resultPanelTitle" class="panel-title" style="cursor: pointer"
+                        onclick="changeHideStatus()"></h3>
+                </div>
+                <div id="resultPanelBody" class="panel-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
