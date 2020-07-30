@@ -7,8 +7,10 @@ import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.po.game.LotteryItem;
+import com.ddpzp.xiaogu_word.po.game.Poem;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by dd
@@ -30,11 +32,6 @@ public interface GameService {
      * @return
      */
     Idiom randomIdiom() throws Exception;
-
-    /**
-     * 初始化成语，从网上爬取成语数据
-     */
-    void initIdiomData();
 
     /**
      * 添加成语
@@ -198,4 +195,12 @@ public interface GameService {
      * @return
      */
     RandomResult randomPersonName(Language language);
+
+    /**
+     * 添加诗词
+     *
+     * @param poem 诗词
+     * @param tags 标签
+     */
+    void addPoem(Poem poem, Set<String> tags) throws GbException;
 }

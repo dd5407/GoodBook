@@ -1,6 +1,6 @@
 package com.ddpzp.xiaogu_word.mapper.spider;
 
-import com.ddpzp.xiaogu_word.po.SpiderRecord;
+import com.ddpzp.xiaogu_word.po.spider.SpiderRecord;
 
 /**
  * Created by dd

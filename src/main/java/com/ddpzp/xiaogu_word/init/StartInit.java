@@ -1,6 +1,6 @@
 package com.ddpzp.xiaogu_word.init;
 
-import com.ddpzp.xiaogu_word.service.GameService;
+import com.ddpzp.xiaogu_word.service.SpiderService;
 import com.ddpzp.xiaogu_word.service.SystemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,9 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class StartInit implements CommandLineRunner {
     @Autowired
-    private GameService gameService;
-    @Autowired
     private SystemService systemService;
+    @Autowired
+    private SpiderService spiderService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -27,6 +27,8 @@ public class StartInit implements CommandLineRunner {
             try {
                 //初始化成语数据
                 initIdiom();
+                //初始化诗词数据
+                initPoem();
                 //清理超期的监控数据
                 systemService.clearSystemInfoRecords();
             } catch (Exception e) {
@@ -36,8 +38,14 @@ public class StartInit implements CommandLineRunner {
     }
 
     private void initIdiom() {
-        log.info("Init idioms start...");
-        gameService.initIdiomData();
-        log.info("Init idioms complete!");
+        log.info("Init idiom start...");
+        spiderService.initIdiomData();
+        log.info("Init idiom complete!");
+    }
+
+    private void initPoem(){
+        log.info("Init poem start...");
+        spiderService.initPoemData();
+        log.info("Init poem complete!");
     }
 }

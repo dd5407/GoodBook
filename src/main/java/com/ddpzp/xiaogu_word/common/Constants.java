@@ -11,6 +11,14 @@ public class Constants {
     /* 爬虫类型 */
     //成语
     public static final String SPIDER_RECORD_TYPE_IDIOM = "idiom";
+    //诗词
+    public static final String SPIDER_RECORD_TYPE_POEM = "poem";
+
+    /* 爬虫配置 */
+    //开启
+    public static final String SPIDER_CONFIG_ENABLE = "true";
+    //关闭
+    public static final String SPIDER_CONFIG_DISABLE = "false";
 
     /* 猜成语 */
     //未猜

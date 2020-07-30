@@ -1,4 +1,4 @@
-package com.ddpzp.xiaogu_word.util;
+package com.ddpzp.xiaogu_word.util.spider;
 
 import com.alibaba.fastjson.JSON;
 import com.ddpzp.xiaogu_word.exception.GbException;
@@ -6,7 +6,7 @@ import com.ddpzp.xiaogu_word.model.baiduHanyu.BaiduHanyuIdiom;
 import com.ddpzp.xiaogu_word.model.baiduHanyu.BaiduHanyuIdiomPage;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.service.GameService;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.ddpzp.xiaogu_word.util.WebClientFactory;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -31,7 +31,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class IdiomCollection {
+public class IdiomSpider {
     @Autowired
     private GameService gameService;
 
@@ -47,13 +47,7 @@ public class IdiomCollection {
                 , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=abac成语&oq=aabb%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=b6eb530c0000db48&rsv_t=87d3dOx8tQ2ge%2FmvKsew1jmCZJSlsPFZq3%2FDk1rtrVFag2xb4HJCWgn5A0E&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=1386&rsv_sug3=76&rsv_sug1=60&rsv_sug7=100&bs=aabb成语"
                 , "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=aabc成语&oq=abac%25E6%2588%2590%25E8%25AF%25AD&rsv_pq=fe8e58580000ede2&rsv_t=c9489%2FvjSg5L6jeqH%2BPQXmbdRYX%2FX%2BYEqnQlAddnu0eSrZJlcqVNqivRguY&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=40725&rsv_sug3=85&rsv_sug1=69&rsv_sug7=100&bs=abac成语"};
 
-        WebClient webClient = new WebClient(BrowserVersion.CHROME);
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setActiveXNative(false);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.getOptions().setTimeout(30000);
+        WebClient webClient = WebClientFactory.getInstance();
         for (String url : urls) {
             parseSearchUrl(webClient, url);
         }

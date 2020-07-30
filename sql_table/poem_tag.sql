@@ -1,0 +1,7 @@
+CREATE TABLE `poem_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `poem_id` int(11) NOT NULL COMMENT '诗词id',
+  `tag` varchar(255) NOT NULL COMMENT '标签',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='诗词标签';

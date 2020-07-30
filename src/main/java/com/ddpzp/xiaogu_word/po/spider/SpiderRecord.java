@@ -1,4 +1,4 @@
-package com.ddpzp.xiaogu_word.po;
+package com.ddpzp.xiaogu_word.po.spider;
 
 import lombok.Data;
 
