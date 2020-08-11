@@ -2,25 +2,16 @@ package com.ddpzp.xiaogu_word.service.impl;
 
 import com.ddpzp.xiaogu_word.common.Constants;
 import com.ddpzp.xiaogu_word.common.Language;
-import com.ddpzp.xiaogu_word.common.SpiderConfigEnum;
 import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.mapper.game.GuessIdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.game.IdiomMapper;
 import com.ddpzp.xiaogu_word.mapper.game.LotteryMapper;
-import com.ddpzp.xiaogu_word.mapper.game.PoemMapper;
-import com.ddpzp.xiaogu_word.mapper.game.PoemTagMapper;
-import com.ddpzp.xiaogu_word.mapper.spider.SpiderConfigMapper;
-import com.ddpzp.xiaogu_word.mapper.spider.SpiderRecordMapper;
 import com.ddpzp.xiaogu_word.model.game.RandomResult;
-import com.ddpzp.xiaogu_word.po.spider.SpiderRecord;
 import com.ddpzp.xiaogu_word.po.game.Frog;
 import com.ddpzp.xiaogu_word.po.game.GuessIdiom;
 import com.ddpzp.xiaogu_word.po.game.Idiom;
 import com.ddpzp.xiaogu_word.po.game.LotteryItem;
-import com.ddpzp.xiaogu_word.po.game.Poem;
-import com.ddpzp.xiaogu_word.po.game.PoemTag;
 import com.ddpzp.xiaogu_word.service.GameService;
-import com.ddpzp.xiaogu_word.util.spider.IdiomSpider;
 import com.ddpzp.xiaogu_word.util.NlpUtil;
 import com.github.javafaker.Faker;
 import com.hankcs.hanlp.HanLP;
@@ -28,14 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by dd
@@ -50,10 +39,7 @@ public class GameServiceImpl implements GameService {
     private GuessIdiomMapper guessIdiomMapper;
     @Autowired
     private LotteryMapper lotteryMapper;
-    @Autowired
-    private PoemMapper poemMapper;
-    @Autowired
-    private PoemTagMapper poemTagMapper;
+
 
     /**
      * 随机生成器，懒加载
@@ -425,43 +411,6 @@ public class GameServiceImpl implements GameService {
         RandomResult result = new RandomResult();
         result.setName(name);
         return result;
-    }
-
-    /**
-     * 添加诗词
-     *
-     * @param poem 诗词
-     * @param tags 标签
-     */
-    @Override
-    @Transactional
-    public void addPoem(Poem poem, Set<String> tags) throws GbException {
-        String title = poem.getTitle();
-        String author = poem.getAuthor();
-        if (StringUtils.isBlank(title)) {
-            throw new GbException("标题不能为空！");
-        }
-        if (StringUtils.isBlank(author)) {
-            throw new GbException("作者不能为空");
-        }
-        //检查数据库中是否存在相同的数据，由于名称相同的诗词很常见，所以加上作者一起校验
-        Poem poemInDb = poemMapper.checkRepeat(title, author);
-        if (poemInDb != null) {
-            throw new GbException(String.format("诗词[%s]-%s已存在！", title, author));
-        }
-
-        if (StringUtils.isBlank(poem.getBody())) {
-            throw new GbException("诗词主体不能为空！");
-        }
-
-        poemMapper.addPoem(poem);
-        for (String tag : tags) {
-            PoemTag poemTag = new PoemTag();
-            poemTag.setPoemId(poem.getId());
-            poemTag.setTag(tag);
-            poemTagMapper.addTag(poemTag);
-        }
-        log.info("诗词添加成功，名称：{}，作者：{}", title, author);
     }
 
     /**

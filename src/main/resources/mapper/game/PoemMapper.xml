@@ -19,4 +19,60 @@
     <select id="countPoem" resultType="java.lang.Integer">
         select count(*) from poem
     </select>
+    <select id="fuzzySearchPoem" resultType="com.ddpzp.xiaogu_word.po.game.Poem">
+        select * from poem
+        <where>
+            <if test="title!=null and title!=''">
+                title like "%"#{title}"%"
+            </if>
+            <if test="author!=null and author!=''">
+                author like "%"#{author}"%"
+            </if>
+            <if test="body!=null and body!=''">
+                body like "%"#{body}"%"
+            </if>
+        </where>
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
+    <select id="countFuzzySearchPoem" resultType="java.lang.Integer">
+        select count(*) from poem
+        <where>
+            <if test="title!=null and title!=''">
+                title like "%"#{title}"%"
+            </if>
+            <if test="author!=null and author!=''">
+                and author like "%"#{author}"%"
+            </if>
+            <if test="body!=null and body!=''">
+                and body like "%"#{body}"%"
+            </if>
+        </where>
+    </select>
+    <select id="searchPoem" resultType="com.ddpzp.xiaogu_word.po.game.Poem">
+        select * from poem
+        <where>
+            <if test="title!=null and title!=''">
+                title=#{title}
+            </if>
+            <if test="author!=null and author!=''">
+                and author=#{author}
+            </if>
+        </where>
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
+    <select id="countSearchPoem" resultType="java.lang.Integer">
+        select count(*) from poem
+        <where>
+            <if test="title!=null and title!=''">
+                title=#{title}
+            </if>
+            <if test="author!=null and author!=''">
+                and author=#{author}
+            </if>
+        </where>
+    </select>
 </mapper>

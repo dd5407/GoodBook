@@ -5,7 +5,7 @@ import com.ddpzp.xiaogu_word.exception.GbException;
 import com.ddpzp.xiaogu_word.model.baiduHanyu.BaiduHanyuPoem;
 import com.ddpzp.xiaogu_word.model.baiduHanyu.BaiduHanyuPoemPage;
 import com.ddpzp.xiaogu_word.po.game.Poem;
-import com.ddpzp.xiaogu_word.service.GameService;
+import com.ddpzp.xiaogu_word.service.PoemService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -30,7 +30,7 @@ import java.util.Set;
 @Slf4j
 public class PoemSpider {
     @Autowired
-    private GameService gameService;
+    private PoemService poemService;
 
     public void collect() {
         log.info("开始运行诗词爬虫！");
@@ -100,7 +100,7 @@ public class PoemSpider {
                     continue;
                 }
                 try {
-                    gameService.addPoem(poem, tags);
+                    poemService.addPoem(poem, tags);
                 } catch (GbException ge) {
                     log.warn("诗词[{}]添加失败！{}", title, ge.getMessage());
                 } catch (Exception e) {
