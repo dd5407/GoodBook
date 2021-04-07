@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.xiaogu_word.mapper.social.SlimMapper">
+    <select id="getRecords" resultType="com.ddpzp.xiaogu_word.po.social.SlimRecord">
+        SELECT * FROM slim
+        <where>
+            <if test="username!=null and username!=''">
+                username=#{username}
+            </if>
+        </where>
+        order by create_time desc
+        limit #{startNum},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM slim
+        <where>
+            <if test="username!=null and username!=''">
+                username=#{username}
+            </if>
+        </where>
+    </select>
+    <select id="getRecordsByDate" resultType="com.ddpzp.xiaogu_word.po.social.SlimRecord">
+        SELECT * FROM slim
+        WHERE to_days(create_time)=to_days(#{queryDate})
+        <if test="username!=null and username!=''">
+            and username=#{username}
+        </if>
+    </select>
+</mapper>
