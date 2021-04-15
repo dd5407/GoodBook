@@ -27,8 +27,12 @@ public class JsonResult<T> {
     }
 
     public static JsonResult error(String errMsg) {
+        return error(ErrorCode.ERROR, errMsg);
+    }
+
+    public static JsonResult error(Integer code, String errMsg) {
         JsonResult result = new JsonResult<>();
-        result.setErrorCode(ErrorCode.ERROR);
+        result.setErrorCode(code);
         result.setMsg(errMsg);
         return result;
     }

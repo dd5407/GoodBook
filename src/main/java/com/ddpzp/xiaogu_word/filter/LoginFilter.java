@@ -23,6 +23,9 @@ import java.io.PrintWriter;
 @WebFilter(urlPatterns = "/gu/*", filterName = "loginFilter")
 @Slf4j
 public class LoginFilter implements Filter {
+    private String[] passUrl = {"/gu/user/login",
+            "/gu/user/regist"};
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -35,7 +38,7 @@ public class LoginFilter implements Filter {
         String uri = httpServletRequest.getRequestURI();
         log.info("request ip:[{}],uri:[{}]", SystemUtil.getUserIp(httpServletRequest), uri);
         //跳过登录
-        if ("/gu/user/login".equals(uri)) {
+        if (noNeedLogin(uri)) {
             chain.doFilter(request, response);
             return;
         }
@@ -66,6 +69,15 @@ public class LoginFilter implements Filter {
             return;
         }
         chain.doFilter(request, response);
+    }
+
+    private boolean noNeedLogin(String requestUri) {
+        for (String url : passUrl) {
+            if (url.equals(requestUri)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

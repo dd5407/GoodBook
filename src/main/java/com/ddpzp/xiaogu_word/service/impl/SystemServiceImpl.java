@@ -103,6 +103,9 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public SystemInfoModel getLatestSystemInfoRecord() throws GbException {
         SystemInformation latestSystemInfoRecord = systemInfoMapper.getLatestSystemInfoRecord(SystemUtil.getLocalIp());
+        if (latestSystemInfoRecord == null) {
+            return null;
+        }
         return SystemInfoModel.poToModel(latestSystemInfoRecord);
     }
 
@@ -149,6 +152,38 @@ public class SystemServiceImpl implements SystemService {
         } catch (GbException e) {
             log.error("Clear system info error!", e);
         }
+    }
+
+    /**
+     * 监控开关
+     *
+     * @param openMonitor 打开：true，关闭：false
+     */
+    @Override
+    public void changeMonitorStatus(Boolean openMonitor) throws GbException {
+        SystemConfig config = getLocalSystemConfig();
+        // 配置不存在，创建配置；配置存在，修改配置
+        if (config == null) {
+            createLocalSystemConfig(openMonitor);
+        } else {
+            config.setEnableSystemInfoCollection(openMonitor);
+            config.setUpdateTime(new Date());
+            systemInfoMapper.updateSystemConfig(config);
+        }
+    }
+
+    /**
+     * 创建本地系统监控配置
+     *
+     * @param openMonitor
+     */
+    private void createLocalSystemConfig(Boolean openMonitor) {
+        SystemConfig config = new SystemConfig();
+        config.setIp(SystemUtil.getLocalIp());
+        config.setEnableSystemInfoCollection(openMonitor);
+        config.setSystemInfoMaxSaveDay(15);
+        config.setCreateTime(new Date());
+        systemConfigMapper.addConfig(config);
     }
 
     /**

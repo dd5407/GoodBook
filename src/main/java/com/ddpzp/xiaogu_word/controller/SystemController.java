@@ -6,9 +6,7 @@ import com.ddpzp.xiaogu_word.service.SystemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,6 +49,18 @@ public class SystemController extends BaseController {
             return JsonResult.success(records);
         } catch (Exception e) {
             log.error("Get system info records error!", e);
+            return JsonResult.error(e.getMessage());
+        }
+    }
+
+    @PostMapping("changeStatus")
+    @ResponseBody
+    public JsonResult changeMonitorStatus(@RequestParam Boolean openMonitor) {
+        try {
+            systemService.changeMonitorStatus(openMonitor);
+            return JsonResult.success();
+        } catch (Exception e) {
+            log.error("Change system monitor status failed! request status:{}", openMonitor);
             return JsonResult.error(e.getMessage());
         }
     }

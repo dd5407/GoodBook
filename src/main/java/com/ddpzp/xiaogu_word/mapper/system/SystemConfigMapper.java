@@ -8,4 +8,6 @@ import com.ddpzp.xiaogu_word.po.system.SystemConfig;
  */
 public interface SystemConfigMapper {
     SystemConfig getConfig(String ip);
+
+    void addConfig(SystemConfig config);
 }

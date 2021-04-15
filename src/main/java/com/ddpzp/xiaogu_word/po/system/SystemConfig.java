@@ -12,6 +12,7 @@ import java.util.Date;
  */
 @Data
 public class SystemConfig {
+    private Integer id;
     /**
      * 开关，关闭不收集日志
      */
@@ -23,4 +24,6 @@ public class SystemConfig {
     private Integer systemInfoMaxSaveDay;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 }

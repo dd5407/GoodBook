@@ -19,9 +19,9 @@
 
     <insert id="addWord" parameterType="com.ddpzp.xiaogu_word.po.Word">
         INSERT INTO word_book
-        (english,chinese,create_time,creator)
+        (english,chinese,phonetic,example,create_time,creator)
         VALUES
-        (#{english},#{chinese},#{createTime},#{creator})
+        (#{english},#{chinese},#{phonetic},#{example},#{createTime},#{creator})
     </insert>
 
     <select id="getWord" resultType="com.ddpzp.xiaogu_word.po.Word">
@@ -48,6 +48,8 @@
         update word_book
         set chinese=#{chinese},
         english=#{english},
+        phonetic=#{phonetic},
+        example=#{example},
         update_time=#{updateTime}
         where id=#{id}
     </update>

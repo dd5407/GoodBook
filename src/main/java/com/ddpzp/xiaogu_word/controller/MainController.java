@@ -24,4 +24,9 @@ public class MainController {
         log.info("welcome! ip:[{}]", SystemUtil.getUserIp(request));
         return "home";
     }
+
+    @RequestMapping("/head")
+    public String head() {
+        return "head";
+    }
 }

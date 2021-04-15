@@ -53,4 +53,11 @@ public interface SystemService {
      * 清理监控数据
      */
     void clearSystemInfoRecords();
+
+    /**
+     * 监控开关
+     *
+     * @param openMonitor 打开：true，关闭：false
+     */
+    void changeMonitorStatus(Boolean openMonitor) throws GbException;
 }

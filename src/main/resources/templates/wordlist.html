@@ -78,6 +78,18 @@
                                     </td>
                                     <td><input name="chinese" class="chinese" type="text" placeholder="请输入中文"/></td>
                                 </tr>
+                                <tr>
+                                    <td class="tb_bg">
+                                        <label>音标</label>
+                                    </td>
+                                    <td><input name="phonetic" class="phonetic" type="text" placeholder="请输入音标"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="tb_bg">
+                                        <label>例句</label>
+                                    </td>
+                                    <td><input name="example" class="example" type="text" placeholder="请输入例句"/></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -117,6 +129,8 @@
                 <th class="hidden-xs">序号</th>
                 <th>英文</th>
                 <th>中文</th>
+                <th>音标</th>
+                <th>例句</th>
                 <th>创建时间</th>
                 <th class="hidden-xs">创建人</th>
                 <th>操作</th>
@@ -131,6 +145,8 @@
                 <td name="index" class="hidden-xs" th:text="${wordStat.index+1}">-</td>
                 <td name="english" th:text="${word.english}">-</td>
                 <td name="chinese" th:text="${word.chinese}">-</td>
+                <td name="phonetic" th:text="${word.phonetic}">-</td>
+                <td name="example" th:text="${word.example}">-</td>
                 <td name="createTime" th:text="${#dates.format(word.createTime,'yyyy-MM-dd HH:mm:ss')}">-</td>
                 <td name="creator" class="hidden-xs" th:text="${word.creator}">-</td>
                 <td>
