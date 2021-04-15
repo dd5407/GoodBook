@@ -38,6 +38,9 @@ $(function () {
         var id = $('#word input[name=id]').val();
         var english = $('#word input[name=english]').val();
         var chinese = $('#word input[name=chinese]').val();
+        var phonetic = $('#word input[name=phonetic]').val();
+        var example = $('#word input[name=example]').val();
+
         if (english == undefined || english.trim() == '') {
             toastr.error("大佬，英文不能为空！");
             return;
@@ -49,7 +52,9 @@ $(function () {
         var word = {
             id: id,
             english: english.trim(),
-            chinese: chinese.trim()
+            chinese: chinese.trim(),
+            phonetic: phonetic,
+            example: example
         };
         if (id == undefined || id == '') {
             methods.addWord(word);
@@ -132,6 +137,8 @@ function addModal() {
     $('#word input[name=id]').val("")
     $('#word input[name=english]').val("");
     $('#word input[name=chinese]').val("");
+    $('#word input[name=phonetic]').val("");
+    $('#word input[name=example]').val("");
     $('#word .modal-header label').html("添加");
     $('#word').modal();
 }
@@ -141,12 +148,16 @@ function editModal(ele) {
     var word = {
         id: tr.find("[name=id]").text(),
         english: tr.find("[name=english]").text(),
-        chinese: tr.find("[name=chinese]").text()
+        chinese: tr.find("[name=chinese]").text(),
+        phonetic: tr.find("[name=phonetic]").text(),
+        example: tr.find("[name=example]").text()
     };
     console.log(word);
     $('#word input[name=id]').val(word.id);
     $('#word input[name=english]').val(word.english);
     $('#word input[name=chinese]').val(word.chinese);
+    $('#word input[name=phonetic]').val(word.phonetic);
+    $('#word input[name=example]').val(word.example);
     $('#word .modal-header label').html("修改");
     //显示模态框
     $('#word').modal();
@@ -157,7 +168,9 @@ function deleteModal(ele) {
     var word = {
         id: tr.find("[name=id]").text(),
         english: tr.find("[name=english]").text(),
-        chinese: tr.find("[name=chinese]").text()
+        chinese: tr.find("[name=chinese]").text(),
+        phonetic: tr.find("[name=phonetic]").text(),
+        example: tr.find("[name=example]").text()
     };
     console.log(word);
     $.confirm({
@@ -193,6 +206,8 @@ var methods = {
                 "<td name='index' class='hidden-xs'>" + (index++) + "</td>" +
                 "<td name='english'>" + word.english + "</td>" +
                 "<td name='chinese'>" + word.chinese + "</td>" +
+                "<td name='phonetic'>" + (word.phonetic || '') + "</td>" +
+                "<td name='example'>" + (word.example || '') + "</td>" +
                 "<td name='createTime'>" + word.createTime + "</td>" +
                 "<td name='creator' class='hidden-xs'>" + word.creator + "</td>" +
                 "<td>" +

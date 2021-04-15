@@ -1,5 +1,6 @@
 package com.ddpzp.xiaogu_word.mapper.system;
 
+import com.ddpzp.xiaogu_word.po.system.SystemConfig;
 import com.ddpzp.xiaogu_word.po.system.SystemInformation;
 import org.apache.ibatis.annotations.Param;
 
@@ -45,4 +46,11 @@ public interface SystemInfoMapper {
      * @param beforeDate
      */
     void deleteRecordBeforeDate(@Param("ip") String ip, @Param("beforeDate") Date beforeDate);
+
+    /**
+     * 更新监控配置
+     *
+     * @param config
+     */
+    void updateSystemConfig(SystemConfig config);
 }

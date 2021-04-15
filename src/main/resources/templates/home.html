@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8"/>
     <!--<meta name="viewport"-->
-          <!--content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>-->
+    <!--content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>-->
     <link rel="stylesheet" type="text/css" th:href="@{/css/common/bootstrap.css}"/>
     <link rel="stylesheet" th:href="@{/css/home/home.css}"/>
     <link rel="stylesheet" th:href="@{/css/home/partical.css}"/>
     <script type="text/javascript" th:src="@{/js/common/jquery-3.4.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/common/bootstrap.js}"></script>
-    <script type="text/javascript" th:src="@{/js/word.js}"></script>
+    <script type="text/javascript" th:src="@{/js/user/user.js}"></script>
     <title>Good Book</title>
 </head>
 <body>
@@ -28,11 +28,17 @@
                     <i class="glyphicon glyphicon-user"></i>
                 </div>
                 <div class="form-group">
-                    <input id="username" name="username" type="text" class="form-control" style="height: 47px"
-                           placeholder="请输入用户名">
+                    <input id="username" name="username" onchange="hiddenErrMsg()" type="text" class="form-control"
+                           style="height: 47px" placeholder="请输入用户名">
+                    <input id="password" name="password" onchange="hiddenErrMsg()" type="password" class="form-control"
+                           style="height: 47px" placeholder="请输入密码">
+                    <span id="errorMsg" hidden="hidden" style="color:#d20900"></span>
                 </div>
                 <div class="form-group">
-                    <button type="submit" style="margin-top: 22px;width: 100%" class="btn btn-lg btn-primary">登录
+                    <button type="button" id="login" style="margin-top: 22px;width: 100%" class="btn btn-lg btn-primary">登录
+                    </button>
+                    <button type="button" id="regist" style="margin-top: 22px;width: 100%" class="btn btn-lg btn-info">
+                        注册
                     </button>
                 </div>
             </form>

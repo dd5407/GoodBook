@@ -1,6 +1,7 @@
 package com.ddpzp.xiaogu_word.service;
 
 import com.ddpzp.xiaogu_word.po.user.LoginRecord;
+import com.ddpzp.xiaogu_word.po.user.User;
 
 import java.util.List;
 
@@ -24,4 +25,19 @@ public interface UserService {
      * @return
      */
     List<LoginRecord> getLoginRecords(String account);
+
+    /**
+     * 根据用户名获取用户
+     *
+     * @param username
+     * @return
+     */
+    User getUser(String username);
+
+    /**
+     * 添加用户
+     *
+     * @param user
+     */
+    void addUser(User user);
 }

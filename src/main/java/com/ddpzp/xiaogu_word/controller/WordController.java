@@ -129,14 +129,10 @@ public class WordController extends BaseController {
                 log.error("Update word error,word is not exists! Request word:[{}]", wordJsonFromRequest);
                 return JsonResult.error("该单词记录不存在！请刷新列表后再试！");
             }
-            Word wordInDatabase = wordInDatabaseList.get(0);
-            //未做修改，直接返回成功
-            if (StringUtils.equals(wordInDatabase.getEnglish(), english)
-                    && StringUtils.equals(wordInDatabase.getChinese(), chinese)) {
-                return JsonResult.success();
-            }
 
-            if(wordExists(english)){
+            Word wordInDatabase = wordInDatabaseList.get(0);
+            boolean englishChanged = !StringUtils.equalsIgnoreCase(wordInDatabase.getEnglish(), english);
+            if (englishChanged && wordExists(english)) {
                 log.warn("单词[{}]已存在！", english);
                 return JsonResult.error(String.format("单词[%s]已存在！", english));
             }
