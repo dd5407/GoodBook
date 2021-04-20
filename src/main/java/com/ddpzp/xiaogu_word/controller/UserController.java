@@ -99,6 +99,10 @@ public class UserController extends BaseController {
                 return JsonResult.error("用户已注册！");
             }
 
+            if(simplePassword(password)){
+                return JsonResult.error("密码最少为6位！");
+            }
+
             User newUser = new User();
             newUser.setUsername(username);
             newUser.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
@@ -108,6 +112,10 @@ public class UserController extends BaseController {
             log.error("Regist failed! username={}", username, e);
             return JsonResult.error("系统错误，注册失败！");
         }
+    }
+
+    private boolean simplePassword(String password) {
+        return password.length() < 6;
     }
 
     /**
