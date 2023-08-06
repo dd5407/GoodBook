@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.spider.SpiderConfigMapper">
-    <select id="getConfig" resultType="com.ddpzp.xiaogu_word.po.spider.SpiderConfig">
+<mapper namespace="com.ddpzp.goodbook.mapper.spider.SpiderConfigMapper">
+    <select id="getConfig" resultType="com.ddpzp.goodbook.po.spider.SpiderConfig">
         select * from spider_config where type=#{type} and config_name=#{configName}
         order by create_time desc limit 1
     </select>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.system.SystemConfigMapper">
-    <select id="getConfig" resultType="com.ddpzp.xiaogu_word.po.system.SystemConfig">
+<mapper namespace="com.ddpzp.goodbook.mapper.system.SystemConfigMapper">
+    <select id="getConfig" resultType="com.ddpzp.goodbook.po.system.SystemConfig">
         SELECT * FROM system_config WHERE ip=#{ip} limit 1
     </select>
-    <update id="updateSystemConfig" parameterType="com.ddpzp.xiaogu_word.po.system.SystemConfig">
+    <update id="updateSystemConfig" parameterType="com.ddpzp.goodbook.po.system.SystemConfig">
         update system_config set
         update_time=#{updateTime},
         system_info_max_save_day=#{systemInfoMaxSaveDay},

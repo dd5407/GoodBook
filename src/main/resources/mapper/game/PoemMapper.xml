@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.game.PoemMapper">
-    <insert id="addPoem" parameterType="com.ddpzp.xiaogu_word.po.game.Poem" useGeneratedKeys="true" keyProperty="id">
+<mapper namespace="com.ddpzp.goodbook.mapper.game.PoemMapper">
+    <insert id="addPoem" parameterType="com.ddpzp.goodbook.po.game.Poem" useGeneratedKeys="true" keyProperty="id">
         insert into poem
         (title,author,
         dynasty,body,
@@ -13,13 +13,13 @@
         #{means},#{authorDetail},
         #{authorBaikeLink})
     </insert>
-    <select id="checkRepeat" resultType="com.ddpzp.xiaogu_word.po.game.Poem">
+    <select id="checkRepeat" resultType="com.ddpzp.goodbook.po.game.Poem">
         SELECT * FROM poem WHERE title=#{title} and author=#{author} limit 1
     </select>
     <select id="countPoem" resultType="java.lang.Integer">
         select count(*) from poem
     </select>
-    <select id="fuzzySearchPoem" resultType="com.ddpzp.xiaogu_word.po.game.Poem">
+    <select id="fuzzySearchPoem" resultType="com.ddpzp.goodbook.po.game.Poem">
         select * from poem
         <where>
             <if test="title!=null and title!=''">
@@ -50,7 +50,7 @@
             </if>
         </where>
     </select>
-    <select id="searchPoem" resultType="com.ddpzp.xiaogu_word.po.game.Poem">
+    <select id="searchPoem" resultType="com.ddpzp.goodbook.po.game.Poem">
         select * from poem
         <where>
             <if test="title!=null and title!=''">

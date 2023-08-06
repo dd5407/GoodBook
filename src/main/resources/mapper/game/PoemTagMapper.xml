@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.game.PoemTagMapper">
-    <insert id="addTag" parameterType="com.ddpzp.xiaogu_word.po.game.PoemTag">
+<mapper namespace="com.ddpzp.goodbook.mapper.game.PoemTagMapper">
+    <insert id="addTag" parameterType="com.ddpzp.goodbook.po.game.PoemTag">
         insert into poem_tag
         (poem_id,tag
         ) values (

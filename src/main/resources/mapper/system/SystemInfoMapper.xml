@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.system.SystemInfoMapper">
-    <insert id="addSystemInfo" parameterType="com.ddpzp.xiaogu_word.po.system.SystemInformation">
+<mapper namespace="com.ddpzp.goodbook.mapper.system.SystemInfoMapper">
+    <insert id="addSystemInfo" parameterType="com.ddpzp.goodbook.po.system.SystemInformation">
         INSERT INTO system_info(
         cpu_usage,
         swap_memory_used,
@@ -27,7 +27,7 @@
         #{ip})
     </insert>
 
-    <select id="getSystemInfoRecords" resultType="com.ddpzp.xiaogu_word.po.system.SystemInformation">
+    <select id="getSystemInfoRecords" resultType="com.ddpzp.goodbook.po.system.SystemInformation">
         SELECT * FROM system_info
         <where>
             <if test="ip!=null and ip!=''">
@@ -40,7 +40,7 @@
         </if>
     </select>
 
-    <select id="getLatestSystemInfoRecord" resultType="com.ddpzp.xiaogu_word.po.system.SystemInformation">
+    <select id="getLatestSystemInfoRecord" resultType="com.ddpzp.goodbook.po.system.SystemInformation">
         SELECT * FROM system_info
         WHERE ip=#{ip}
         ORDER BY create_time DESC limit 1

@@ -1,4 +1,4 @@
-pids=$(ps -ef |grep xiaogu_word|grep -v grep|awk '{print $2}')
+pids=$(ps -ef |grep goodbook|grep -v grep|awk '{print $2}')
 for pid in $pids
 do
 	echo $pid

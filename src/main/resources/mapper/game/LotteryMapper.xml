@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.game.LotteryMapper">
-    <select id="getLotteryItems" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+<mapper namespace="com.ddpzp.goodbook.mapper.game.LotteryMapper">
+    <select id="getLotteryItems" resultType="com.ddpzp.goodbook.po.game.LotteryItem">
         SELECT * FROM lottery
         <where>
             <if test="creator!=null and creator!=''">
@@ -23,22 +23,22 @@
         </where>
     </select>
 
-    <select id="getLotteryItemByName" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+    <select id="getLotteryItemByName" resultType="com.ddpzp.goodbook.po.game.LotteryItem">
         SELECT * FROM lottery WHERE name=#{name} AND creator=#{creator}
     </select>
 
-    <insert id="addLotteryItem" parameterType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+    <insert id="addLotteryItem" parameterType="com.ddpzp.goodbook.po.game.LotteryItem">
         INSERT INTO lottery
         (name,create_time,creator)
         VALUES
         (#{name},#{createTime},#{creator})
     </insert>
 
-    <select id="getLotteryItem" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+    <select id="getLotteryItem" resultType="com.ddpzp.goodbook.po.game.LotteryItem">
         SELECT * FROM lottery WHERE id=#{id}
     </select>
 
-    <update id="updateLotteryItem" parameterType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+    <update id="updateLotteryItem" parameterType="com.ddpzp.goodbook.po.game.LotteryItem">
         update lottery
         set name=#{name},
         update_time=#{updateTime}
@@ -57,7 +57,7 @@
         </foreach>
     </delete>
 
-    <select id="getLotteryItemByIndex" resultType="com.ddpzp.xiaogu_word.po.game.LotteryItem">
+    <select id="getLotteryItemByIndex" resultType="com.ddpzp.goodbook.po.game.LotteryItem">
         SELECT * FROM lottery
         WHERE creator=#{creator}
         limit #{index},1

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.spider.SpiderRecordMapper">
-    <select id="getLatestRecord" resultType="com.ddpzp.xiaogu_word.po.spider.SpiderRecord">
+<mapper namespace="com.ddpzp.goodbook.mapper.spider.SpiderRecordMapper">
+    <select id="getLatestRecord" resultType="com.ddpzp.goodbook.po.spider.SpiderRecord">
         select * from spider_record
         where record_type=#{recordType}
         order by update_time desc limit 1
     </select>
-    <insert id="addRecord" parameterType="com.ddpzp.xiaogu_word.po.spider.SpiderRecord">
+    <insert id="addRecord" parameterType="com.ddpzp.goodbook.po.spider.SpiderRecord">
         insert into spider_record
         (record_num,record_type,update_time) values
         (#{recordNum},#{recordType},CURRENT_TIMESTAMP)

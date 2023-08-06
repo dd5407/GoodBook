@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.word.WordMapper">
-    <select id="getWords" resultType="com.ddpzp.xiaogu_word.po.Word">
+<mapper namespace="com.ddpzp.goodbook.mapper.word.WordMapper">
+    <select id="getWords" resultType="com.ddpzp.goodbook.po.Word">
         SELECT * FROM word_book
         <where>
             <if test="query!=null and query!=''">
@@ -17,14 +17,14 @@
         </if>
     </select>
 
-    <insert id="addWord" parameterType="com.ddpzp.xiaogu_word.po.Word">
+    <insert id="addWord" parameterType="com.ddpzp.goodbook.po.Word">
         INSERT INTO word_book
         (english,chinese,phonetic,example,create_time,creator)
         VALUES
         (#{english},#{chinese},#{phonetic},#{example},#{createTime},#{creator})
     </insert>
 
-    <select id="getWord" resultType="com.ddpzp.xiaogu_word.po.Word">
+    <select id="getWord" resultType="com.ddpzp.goodbook.po.Word">
         SELECT * FROM word_book WHERE id=#{id}
     </select>
 
@@ -44,7 +44,7 @@
         </where>
     </select>
 
-    <update id="updateWord" parameterType="com.ddpzp.xiaogu_word.po.Word">
+    <update id="updateWord" parameterType="com.ddpzp.goodbook.po.Word">
         update word_book
         set chinese=#{chinese},
         english=#{english},
@@ -54,7 +54,7 @@
         where id=#{id}
     </update>
 
-    <select id="getWordByEnglish" resultType="com.ddpzp.xiaogu_word.po.Word">
+    <select id="getWordByEnglish" resultType="com.ddpzp.goodbook.po.Word">
         select * from word_book
         where english=#{english} and creator=#{creator}
     </select>

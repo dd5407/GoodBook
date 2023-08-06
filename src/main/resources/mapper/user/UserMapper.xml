@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ddpzp.xiaogu_word.mapper.user.UserMapper">
-    <select id="getUser" resultType="com.ddpzp.xiaogu_word.po.user.User">
+<mapper namespace="com.ddpzp.goodbook.mapper.user.UserMapper">
+    <select id="getUserByName" resultType="com.ddpzp.goodbook.po.user.User">
         SELECT * FROM user_info WHERE username=#{username} LIMIT 1
     </select>
-    <insert id="addUser" parameterType="com.ddpzp.xiaogu_word.po.user.User">
+    <insert id="addUser" parameterType="com.ddpzp.goodbook.po.user.User">
         INSERT INTO user_info (username,password,create_time,update_pwd_time)
         VALUES (#{username},#{password},#{createTime},#{updatePwdTime})
     </insert>
+    <select id="getUser" resultType="com.ddpzp.goodbook.po.user.User">
+        SELECT * FROM user_info WHERE id=#{id} LIMIT 1
+    </select>
 </mapper>
