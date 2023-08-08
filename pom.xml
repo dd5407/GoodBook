@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.11.3</version>
+            <version>1.15.3</version>
         </dependency>
 
         <!--html解析器，可以解析动态页面，模拟按钮点击-->
