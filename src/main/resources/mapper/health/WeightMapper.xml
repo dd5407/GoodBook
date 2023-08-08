@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.apache.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddpzp.goodbook.mapper.health.WeightMapper">
+    <insert id="addRecord" parameterType="com.ddpzp.goodbook.po.health.Weight" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into weight
+        (weight,user_id,record_time,create_time)
+        values
+        (#{weight},#{userId},#{recordTime},CURRENT_TIMESTAMP)
+    </insert>
+    <update id="updateRecord" parameterType="com.ddpzp.goodbook.po.health.Weight">
+        update weight set weight=#{weight}, record_time=#{recordTime}, update_time=#{updateTime} where id=#{id}
+    </update>
+    <select id="getAllByUserId" resultType="com.ddpzp.goodbook.po.health.Weight">
+        select * from weight where user_id=#{userId} order by record_time desc,create_time desc
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
+    <select id="getTotalByUserId" resultType="java.lang.Integer">
+        select count(*) from weight where user_id=#{userId}
+    </select>
+    <select id="getAll" resultType="com.ddpzp.goodbook.po.health.Weight">
+        select * from weight order by create_time desc,update_time desc
+        <if test="startNum!=null and pageSize!=null">
+            limit #{startNum},#{pageSize}
+        </if>
+    </select>
+    <delete id="delete">
+        delete from weight where id=#{id}
+    </delete>
+    <delete id="batchDelete">
+        delete from weight where id in
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>体重记录</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/bootstrap.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/toastr.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/jquery-confirm.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/health/weight.css}"/>
+    <script type="text/javascript" th:src="@{/js/common/jquery-3.4.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/bootbox.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/toastr.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/jquery-confirm.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/datetime/moment-with-locales.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/datetime/bootstrap-datetimepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/datetime/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/health/weight.js}"></script>
+</head>
+<body>
+<div class="box">
+    <div class="content">
+        <div class="container-fluid content_width">
+            <div class="page-header">
+                <h1 align="center"><small>体重记录</small></h1>
+            </div>
+            <div class="line"></div>
+        </div>
+
+        <div class="export">
+            <button id="new_add" type="button" class="btn btn-primary btn-sm" onclick="addModal()">
+                <span class="glyphicon glyphicon-plus"></span>
+                <span>添加</span>
+            </button>
+            <button id="batch_del" type="button" class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-minus"></span>
+                <span>删除</span>
+            </button>
+            <div class="modal fade" id="weightModal">
+                <div class="modal-dialog modal-lg modal_position">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <label>添加记录</label>
+                        </div>
+                        <div class="modal-body">
+                            <table id="recordModal" class="table">
+                                <tbody>
+                                <tr hidden="hidden">
+                                    <td class="tb_bg">
+                                        <label>id</label>
+                                    </td>
+                                    <td><input name="id" type="text"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="tb_bg">
+                                        <label><span style="font-size: 14px; color: red;">*</span>体重</label>
+                                    </td>
+                                    <td><input name="weight" class="weight" type="text" placeholder="请输入体重，单位kg"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="tb_bg">
+                                        <label class="control-label"><span style="font-size: 14px; color: red;">*</span>称重时间</label>
+                                    </td>
+                                    <td>
+                                        <div id="datetimer" class="controls input-append date form_datetime" data-date="" data-date-format="yyyy-mm-dd HH:ii:ss" data-link-field="dtp_input1">
+                                            <input id="recordTime" class="recordTime" size="16" type="text" value="" readonly>
+                                            <span class="add-on"><i class="icon-remove"></i></span>
+                                            <span class="add-on"><i class="icon-th"></i></span>
+                                        </div>
+                                        <input type="hidden" id="dtp_input1" value="" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="confirm_btn" type="button" class="btn btn-secondary">确定</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="delConfirmModal">
+            <div class="modal-dialog modal-lg modal_position">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <label>删除选项</label>
+                    </div>
+                    <div class="modal-body">
+                        <p>确定要删除吗？</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="delConfirm_btn" type="button" class="btn btn-secondary">确定</button>
+                        <button id="delCancel_btn" type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table id="tb" class="table">
+            <thead>
+            <tr>
+                <th>
+                    <input id="batchCheckBox" type="checkbox">
+                </th>
+                <th hidden="hidden">id</th>
+                <th class="hidden-xs">序号</th>
+                <th>体重</th>
+                <th>称重时间</th>
+                <th>创建时间</th>
+<!--                <th>更新时间</th>-->
+                <th class="hidden-xs">创建人</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="show_tbody">
+            <tr th:each="item:${weightItems}">
+                <td>
+                    <input type="checkbox" th:value="${item.id}">
+                </td>
+                <td name="id" hidden="hidden" th:text="${item.id}">-</td>
+                <td name="index" class="hidden-xs" th:text="${itemStat.index+1}">-</td>
+                <td name="weight" th:text="${item.weight}">-</td>
+                <td name="recordTime" th:text="${#dates.format(item.recordTime,'yyyy-MM-dd HH:mm:ss')}">-</td>
+                <td name="createTime" th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}">-</td>
+<!--                <td name="updateTime" th:text="${#dates.format(item.updateTime,'yyyy-MM-dd HH:mm:ss')}">-</td>-->
+                <td name="userName" class="hidden-xs" th:text="${item.userName}">-</td>
+                <td>
+<!--                    <a href="javascript:void(0);" class="edit" onclick="editModal(this)">编辑</a>-->
+                    <a href="javascript:void(0);" class="del" onclick="deleteModal(this)">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
