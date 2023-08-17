@@ -11,6 +11,8 @@ $(function () {
         locale: moment.locale('zh-cn')
     });
 
+    initCharts("weight", 'weightChart', '体重变化图', '时间', '体重（kg）');
+
     //模态框确认：新增、修改
     $('#confirm_btn').on('click', function () {
         var id = $('#weightModal input[name=id]').val();
@@ -39,9 +41,9 @@ $(function () {
     //全选复选框监听
     $('#batchCheckBox').on('click', function () {
         if ($('#batchCheckBox').prop('checked')) {
-            $('#show_tbody input[type=checkbox]').prop('checked', true);
+            $('#weight_tbody input[type=checkbox]').prop('checked', true);
         } else {
-            $('#show_tbody input[type=checkbox]').prop('checked', false);
+            $('#weight_tbody input[type=checkbox]').prop('checked', false);
         }
     });
 
@@ -59,7 +61,7 @@ $(function () {
     $('#batch_del').on('click', function () {
         var ids = new Array();
         var delItemList = new Array();
-        $('#show_tbody input[type=checkbox]:checked').each(function () {
+        $('#weight_tbody input[type=checkbox]:checked').each(function () {
             var id = $(this).val();
             var weight = $(this).parent().parent().find('[name=weight]').text();
             ids.push(id);
@@ -94,12 +96,100 @@ var current = 1;
 var pageSize = 10;
 var total = 0;
 
+function initCharts(chart, chartId, chartName, xName, yName) {
+    charts[chart] = echarts.init(document.getElementById(chartId));
+    //模态框不显示时，charts初始化width默认为100px。需要监听模态框显示事件，模态框显示时需要重绘图表，按模态框实际大小显示。
+    $('#chartModal').on('shown.bs.modal', function () {
+        charts[chart].resize();
+    });
+
+    var option = {
+        title: {
+            text: chartName,
+            x: 'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            name: xName,
+            data: []
+        },
+        yAxis: {
+            boundaryGap: [0, '50%'],
+            name: yName,
+            type: 'value',
+            min: function (value) {
+                var ma = value.max;
+                var mi = value.min;
+                var val = Math.ceil(mi - (ma - mi) / 2);
+                return val;
+            },
+            max: function (value) {
+                var ma = value.max;
+                var mi = value.min;
+                var val = Math.ceil(ma + (ma - mi) / 2);
+                return val;
+            }
+        },
+        series: [
+            {
+                name: chartName,
+                type: 'line',
+                smooth: false,
+                symbol: 'emptyCircle',
+                areaStyle: {
+                    normal: {}
+                },
+                data: []
+            }
+        ]
+    };
+    charts[chart].setOption(option);
+}
+
+function getFormatTime(time) {
+    return time < 10 ? "0" + time : time;
+}
+
+function setChartsData(records) {
+    var revRecords = records.reverse();
+    console.log("reverse array:", revRecords);
+    var weightArr = [];
+    var time = [];
+    revRecords.forEach(function (record) {
+        var createTime = new Date(record.recordTime.replace(/-/g, "/"));
+        var formatTime = [getFormatTime(createTime.getFullYear()), getFormatTime(createTime.getMonth() + 1), getFormatTime(createTime.getDate())].join("-");
+        time.push(formatTime);
+        weightArr.push(record.weight);
+    });
+    setChart(charts.weight, time, weightArr);
+}
+
+function setChart(chart, xData, data) {
+    chart.setOption({
+        xAxis: {
+            data: xData
+        },
+        series: [{
+            data: data
+        }]
+    });
+}
+
 function addModal() {
     $('#weightModal input[name=id]').val("")
     $('#weightModal input[name=weight]').val("");
     $('#weightModal input[name=recordTime]').val("");
     $('#weightModal .modal-header label').html("添加记录");
     $('#weightModal').modal();
+}
+
+function openChart() {
+    methods.getWeightForChart();
+    $('#chartModal').modal();
 }
 
 function editModal(ele) {
@@ -123,7 +213,7 @@ function deleteModal(ele) {
     var tr = $(ele).parent().parent();
     var item = {
         id: tr.find("[name=id]").text(),
-        name: tr.find("[name=weight]").text()
+        weight: tr.find("[name=weight]").text()
     };
     console.log(item);
     $.confirm({
@@ -139,9 +229,71 @@ function deleteModal(ele) {
     });
 }
 
+function showWeightList(weightList, loginUser, page, pageSize) {
+    var html = "";
+    var index = (page - 1) * pageSize + 1;
+    $('#weight_tbody').empty();
+    for (var i = 0; i < weightList.length; i++) {
+        var weightItem = weightList[i];
+        var id = weightItem.id;
+        var weight = weightItem.weight;
+        var recordTime = weightItem.recordTime;
+        var createTime = weightItem.createTime;
+        var userName = weightItem.userName;
+
+        html = html + "<tr>"
+            + "<td><input type='checkbox' value='" + id + "'></td>"
+            + "<td name='id' hidden='hidden'>" + id + "</td>"
+            + "<td name='index' class='hidden-xs'>" + index + "</td>"
+            + "<td name='weight'>" + weight + "</td>"
+            + "<td name='recordTime'>" + recordTime + "</td>"
+            + "<td name='createTime'>" + createTime + "</td>"
+            + "<td name='userName'>" + userName + "</td>"
+            + "<td><a href='javascript:void(0);' class='del' onclick='deleteModal(this)'>删除</a> </td>"
+            + "</tr>";
+        index++;
+    }
+    $('#weight_tbody').append(html);
+}
+
+var charts = {
+    weight: {}
+};
+
+//生成分页组件
+function buildPagination(page, pageSize, total) {
+    var pageSum = Math.ceil(total / pageSize);
+    $('.pagination').bootstrapPaginator({
+        //设置版本号
+        bootstrapMajorVersion: 3,
+        // 显示第几页
+        currentPage: page,
+        // 总页数
+        totalPages: pageSum,
+        //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
+        onPageClicked: function (event, originalEvent, type, page) {
+            // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
+            currentPage = page;
+            //调用获取列表函数
+            refreshItemList(currentPage, pageSize);
+        }
+    });
+}
+
+function refreshItemList(page, pageSize) {
+    var params = {
+        current: page,
+        pageSize: pageSize
+    };
+    methods.getItemList(params);
+}
 
 function refreshList() {
-    methods.getItemList();
+    var params = {
+        current: 1,
+        pageSize: 10
+    }
+    methods.getItemList(params);
     //复原批量复选框
     $("#batchCheckBox").prop("checked", false);
 }
@@ -150,7 +302,7 @@ var methods = {
     //展示列表
     showItemList: function (total, itemList) {
         //清空列表
-        $('#show_tbody tr').remove();
+        $('#weight_tbody tr').remove();
         var html = "";
         var index = 1;
         itemList.forEach(function (item) {
@@ -168,25 +320,45 @@ var methods = {
                 "<a href='javascript:void(0)' class='del' onclick='deleteModal(this)'>删除</a> " +
                 "</td>"
         });
-        $('#show_tbody').append(html);
+        $('#weight_tbody').append(html);
     },
-    getItemList: function () {
+    getItemList: function (params) {
         $.ajax({
             type: "GET",
             url: "/gu/health/weight/getRecordByUser",
             data: {
-                current: 1,
-                pageSize: 10
+                params
             },
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);
                     return;
                 }
-                total = jsonResult.data.total;
                 var itemList = jsonResult.data.data;
+                var current = params.current;
+                var pageSize = params.pageSize;
+                var total = jsonResult.data.total;
                 methods.showItemList(total, itemList);
-                //todo 刷新分页
+                buildPagination(current, pageSize, total);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                toastr.error(jqXHR.status + ":" + jqXHR.statusText);
+                toastr.error(textStatus);
+            }
+        });
+    },
+    getWeightForChart: function () {
+        $.ajax({
+            type: "GET",
+            url: "/gu/health/weight/getRecordByUser",
+            data: {},
+            success: function (jsonResult) {
+                if (jsonResult.errorCode != 0) {
+                    toastr.error(jsonResult.msg);
+                    return;
+                }
+                var itemList = jsonResult.data.data;
+                setChartsData(itemList);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 toastr.error(jqXHR.status + ":" + jqXHR.statusText);

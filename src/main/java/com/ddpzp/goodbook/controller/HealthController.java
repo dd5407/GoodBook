@@ -74,8 +74,8 @@ public class HealthController extends BaseController{
 
     @GetMapping("/weight/getRecordByUser")
     @ResponseBody
-    public JsonResult getRecordByUser(@RequestParam(required = false, defaultValue = "1") Integer current,
-                                      @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+    public JsonResult getRecordByUser(@RequestParam(required = false) Integer current,
+                                      @RequestParam(required = false) Integer pageSize) {
         try {
             Integer userId = getUserId(session);
             List<WeightModel> records = healthService.getWeightRecordsByUser(userId, current, pageSize);
