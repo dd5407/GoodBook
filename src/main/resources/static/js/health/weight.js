@@ -182,7 +182,7 @@ function setChart(chart, xData, data) {
 function addModal() {
     $('#weightModal input[name=id]').val("")
     $('#weightModal input[name=weight]').val("");
-    $('#weightModal input[name=recordTime]').val("");
+    $('#recordTime').val("");
     $('#weightModal .modal-header label').html("添加记录");
     $('#weightModal').modal();
 }
@@ -197,8 +197,8 @@ function editModal(ele) {
     var tr = $(ele).parent().parent();
     var item = {
         id: tr.find("[name=id]").text(),
-        name: tr.find("[name=weight]").text(),
-        name: tr.find("[name=recordTime]").text()
+        weight: tr.find("[name=weight]").text(),
+        recordTime: tr.find("[name=recordTime]").text()
     };
     console.log(item);
     $('#weightModal input[name=id]').val(item.id);
