@@ -12,7 +12,20 @@
         update weight set weight=#{weight}, record_time=#{recordTime}, update_time=#{updateTime} where id=#{id}
     </update>
     <select id="getAllByUserId" resultType="com.ddpzp.goodbook.po.health.Weight">
-        select * from weight where user_id=#{userId} order by record_time desc,create_time desc
+        select * from weight where user_id=#{userId}
+        <if test="timeRange != null and timeRange != 'all_time'">
+            and record_time >=
+            case #{timeRange}
+                when 'one_week' then DATE_SUB(NOW(), INTERVAL 1 WEEK)
+                when 'one_month' then DATE_SUB(NOW(), INTERVAL 1 MONTH)
+                when 'three_months' then DATE_SUB(NOW(), INTERVAL 3 MONTH)
+                when 'six_months' then DATE_SUB(NOW(), INTERVAL 6 MONTH)
+                when 'one_year' then DATE_SUB(NOW(), INTERVAL 1 YEAR)
+                when 'three_years' then DATE_SUB(NOW(), INTERVAL 3 YEAR)
+                else DATE_SUB(NOW(), INTERVAL 3 YEAR)
+            end
+        </if>
+        order by record_time desc,create_time desc
         <if test="startNum!=null and pageSize!=null">
             limit #{startNum},#{pageSize}
         </if>

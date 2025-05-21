@@ -38,22 +38,7 @@ public class WordController extends BaseController {
     private HttpSession session;
 
     @GetMapping(value = "page/list")
-    public String listPage(Model model) {
-        try {
-            String username = getUsername(session);
-            log.info("Get word list,username={}", username);
-//            int current = 1;
-//            int pageSize = 10;
-//            List<Word> words = wordService.getWords(null, username, current, pageSize);
-            List<Word> words = wordService.getWords(null, username, null, null);
-            Integer total = wordService.countWords(null, username);
-            model.addAttribute("words", words);
-            model.addAttribute("current", 1);
-            model.addAttribute("total", total);
-        } catch (Exception e) {
-            log.error("获取单词列表失败！", e);
-            model.addAttribute(Constants.ERROR_MSG_KEY, String.format("获取单词列表失败,错误信息：[%s]", e.getMessage()));
-        }
+    public String listPage() {
         return "wordlist";
     }
 
@@ -63,8 +48,6 @@ public class WordController extends BaseController {
                                @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
         try {
             String username = getUsername(session);
-            current = null;
-            pageSize = null;
             List<Word> words = wordService.getWords(query, username, current, pageSize);
             Integer total = wordService.countWords(query, username);
             JSONObject obj = new JSONObject();

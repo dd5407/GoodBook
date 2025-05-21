@@ -249,7 +249,7 @@ a:hover {
 
 #wordModal tr td {
     background: #fff;
-    padding: .25 !important
+    padding: .25rem !important
 }
 
 #wordModal tr td input {
@@ -315,7 +315,7 @@ a:hover {
 }
 
 .page {
-    float: right;
+    float: left;
     margin: 3px 46px 0 0
 }
 

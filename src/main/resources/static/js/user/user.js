@@ -8,6 +8,14 @@ $(function () {
     });
 });
 
+// 修改键盘事件监听器，确保按下回车键时调用 login() 函数
+document.addEventListener('keydown', function(event) {
+    // 检查是否按下了回车键
+    if (event.key === 'Enter') {
+        login();
+    }
+});
+
 function hiddenErrMsg() {
     var errMsgEle = $('#errorMsg');
     errMsgEle.prop('hidden', true);

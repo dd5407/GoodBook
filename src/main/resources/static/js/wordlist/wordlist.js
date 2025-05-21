@@ -1,26 +1,31 @@
 $(function () {
+    refreshList();
     //查询
     $('#search_btn').on('click', function () {
         //按钮显示正在查询
         var btn = $(this).button('loading');
         var query = $('#Ktext').val();
+        var page = 1;
+        var pageSize = 10;
         $.ajax({
             type: "GET",
             url: "/gu/word/wordList",
             data: {
                 query: query,
-                current: 1,
-                pageSize: 10
+                current: page,
+                pageSize: pageSize
             },
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);
                     return;
                 }
-                total = jsonResult.data.total;
+                var total = jsonResult.data.total;
                 var wordList = jsonResult.data.data;
                 methods.showWordList(total, wordList);
-                //todo 刷新分页
+                // 刷新分页
+                $('#pagination').twbsPagination('destroy'); // 先销毁现有的分页组件
+                buildPagination(page, pageSize, total); // 重新构建分页组件
             },
             error: function () {
                 toastr.error(textStatus);
@@ -117,22 +122,6 @@ $(function () {
     });
 })
 
-var current = 1;
-var pageSize = 10;
-var total = 0;
-
-function changePage(pageNum) {
-    console.log(pageNum);
-}
-
-function nextPage() {
-
-}
-
-function prePage() {
-
-}
-
 function addModal() {
     $('#word input[name=id]').val("")
     $('#word input[name=english]').val("");
@@ -187,9 +176,39 @@ function deleteModal(ele) {
 }
 
 function refreshList() {
-    methods.getWordList();
+    // 重置分页
+    $('#pagination').twbsPagination('destroy');
+    methods.getWordList(1, 10);
     //复原批量复选框
     $("#batchCheckBox").prop("checked", false);
+}
+
+function buildPagination(page, pageSize, total) {
+    var pageSum = Math.ceil(total / pageSize);
+    if (pageSum === 0) {
+        pageSum = 1;
+    }
+
+    $('#pagination').twbsPagination({
+        //设置版本号
+        bootstrapMajorVersion: 5,
+        // 显示第几页
+        currentPage: page,
+        // 总页数
+        totalPages: pageSum,
+        visiblePages: 5,
+        first: '首页',
+        prev: '上一页',
+        next: '下一页',
+        last: '尾页 [{{total_pages}}]',
+        //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
+        onPageClick: function (event, page) {
+            // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
+            currentPage = page;
+            //调用获取列表函数
+            methods.getWordList(currentPage, pageSize);
+        }
+    });
 }
 
 var methods = {
@@ -217,23 +236,26 @@ var methods = {
         });
         $('#show_tbody').append(html);
     },
-    getWordList: function () {
+    getWordList: function (page, pageSize) {
+        var query = $('#Ktext').val();
         $.ajax({
             type: "GET",
             url: "/gu/word/wordList",
             data: {
-                current: 1,
-                pageSize: 10
+                query: query,
+                current: page,
+                pageSize: pageSize
             },
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);
                     return;
                 }
-                total = jsonResult.data.total;
+                var total = jsonResult.data.total;
                 var wordList = jsonResult.data.data;
                 methods.showWordList(total, wordList);
-                //todo 刷新分页
+                // 刷新分页
+                buildPagination(page, pageSize, total);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 toastr.error(jqXHR.status + ":" + jqXHR.statusText);

@@ -330,15 +330,23 @@ function toGuessIdiom(guessItem) {
 //生成分页组件
 function buildPagination(page, pageSize, total) {
     var pageSum = Math.ceil(total / pageSize);
-    $('.pagination').bootstrapPaginator({
+    if (pageSum === 0) {
+        pageSum = 1;
+    }
+    $('#idiomPagination').twbsPagination({
         //设置版本号
-        bootstrapMajorVersion: 3,
+        bootstrapMajorVersion: 5,
         // 显示第几页
         currentPage: page,
         // 总页数
         totalPages: pageSum,
+        visiblePages: 5,
+        first: '首页',
+        prev: '上一页',
+        next: '下一页',
+        last: '尾页 [{{total_pages}}]',
         //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
-        onPageClicked: function (event, originalEvent, type, page) {
+        onPageClick: function (event, page) {
             // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
             currentPage = page;
             //调用获取列表函数

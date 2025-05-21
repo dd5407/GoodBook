@@ -1,5 +1,7 @@
 $(function () {
 
+    refreshList();
+
     $('#datetimer').datetimepicker({
         language: 'zh-CN',
         format: 'yyyy-mm-dd hh:ii:ss',
@@ -12,6 +14,12 @@ $(function () {
     });
 
     initCharts("weight", 'weightChart', '体重变化图', '时间', '体重（kg）');
+
+    // 添加时间范围选择器的change事件监听器
+    $('#timeRangeSelectInModal').on('change', function () {
+        var timeRange = $(this).val();
+        methods.getWeightForChart(timeRange);
+    });
 
     //模态框确认：新增、修改
     $('#confirm_btn').on('click', function () {
@@ -263,15 +271,24 @@ var charts = {
 //生成分页组件
 function buildPagination(page, pageSize, total) {
     var pageSum = Math.ceil(total / pageSize);
-    $('.pagination').bootstrapPaginator({
+    if (pageSum === 0) {
+        pageSum = 1;
+    }
+
+    $('#weightPagination').twbsPagination({
         //设置版本号
-        bootstrapMajorVersion: 3,
+        bootstrapMajorVersion: 5,
         // 显示第几页
         currentPage: page,
         // 总页数
         totalPages: pageSum,
+        visiblePages: 5,
+        first: '首页',
+        prev: '上一页',
+        next: '下一页',
+        last: '尾页 [{{total_pages}}]',
         //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
-        onPageClicked: function (event, originalEvent, type, page) {
+        onPageClick: function (event, page) {
             // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
             currentPage = page;
             //调用获取列表函数
@@ -327,7 +344,8 @@ var methods = {
             type: "GET",
             url: "/gu/health/weight/getRecordByUser",
             data: {
-                params
+                current: params.current,
+                pageSize: params.pageSize
             },
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
@@ -347,11 +365,13 @@ var methods = {
             }
         });
     },
-    getWeightForChart: function () {
+    getWeightForChart: function (timeRange) {
         $.ajax({
             type: "GET",
             url: "/gu/health/weight/getRecordByUser",
-            data: {},
+            data: {
+                timeRange: timeRange
+            },
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);

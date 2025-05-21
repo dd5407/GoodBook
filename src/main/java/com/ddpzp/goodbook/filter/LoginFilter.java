@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 @Slf4j
 public class LoginFilter implements Filter {
     private String[] passUrl = {"/gu/user/login",
-            "/gu/user/regist"};
+            "/gu/user/regist", "/gu/user/logout"};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

@@ -29,7 +29,7 @@ public interface WeightMapper {
      * @return
      */
     List<Weight> getAllByUserId(@Param("userId") Integer userId,
-                                @Param("startNum") Integer startNum, @Param("pageSize") Integer pageSize);
+                                @Param("startNum") Integer startNum, @Param("pageSize") Integer pageSize, @Param("timeRange") String timeRange);
 
     /**
      * 获取所有体重记录

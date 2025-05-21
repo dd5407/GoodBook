@@ -8,7 +8,7 @@ import java.util.List;
 public interface HealthService {
     void add(Weight weight);
 
-    List<WeightModel> getWeightRecordsByUser(Integer userId, Integer current, Integer pageSize);
+    List<WeightModel> getWeightRecordsByUser(Integer userId, Integer current, Integer pageSize, String timeRange);
 
     Integer getWeightTotalsByUser(Integer userId);
 

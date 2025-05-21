@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 日常身体数据记录
+ * 日常体重记录
  */
 @Data
 public class Weight extends BaseEntity {

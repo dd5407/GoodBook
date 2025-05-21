@@ -38,19 +38,7 @@ public class HealthController extends BaseController{
      * @return
      */
     @GetMapping("/page/health/weight")
-    public String weightPage(Model model) {
-        try {
-            Integer userId = getUserId(session);
-            log.info("Get weight records,username={}", getUsername(session));
-            List<WeightModel> weightRecords = healthService.getWeightRecordsByUser(userId, null, null);
-            Integer total = healthService.getWeightTotalsByUser(userId);
-            model.addAttribute("weightItems", weightRecords);
-            model.addAttribute("current", 1);
-            model.addAttribute("total", total);
-        } catch (Exception e) {
-            log.error("获取体重列表失败！", e);
-            model.addAttribute(Constants.ERROR_MSG_KEY, String.format("获取体重列表失败,错误信息：[%s]", e.getMessage()));
-        }
+    public String weightPage() {
         return "weight";
     }
 
@@ -72,13 +60,15 @@ public class HealthController extends BaseController{
         }
     }
 
+    //获取体重记录列表
     @GetMapping("/weight/getRecordByUser")
     @ResponseBody
     public JsonResult getRecordByUser(@RequestParam(required = false) Integer current,
-                                      @RequestParam(required = false) Integer pageSize) {
+                                      @RequestParam(required = false) Integer pageSize,
+                                      @RequestParam(required = false) String timeRange) {
         try {
             Integer userId = getUserId(session);
-            List<WeightModel> records = healthService.getWeightRecordsByUser(userId, current, pageSize);
+            List<WeightModel> records = healthService.getWeightRecordsByUser(userId, current, pageSize, timeRange);
             Integer total = healthService.getWeightTotalsByUser(userId);
             JSONObject obj = new JSONObject();
             obj.put("data", records);

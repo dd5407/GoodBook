@@ -29,7 +29,7 @@ public class HealthServiceImpl implements HealthService {
     }
 
     @Override
-    public List<WeightModel> getWeightRecordsByUser(Integer userId, Integer current, Integer pageSize) {
+    public List<WeightModel> getWeightRecordsByUser(Integer userId, Integer current, Integer pageSize, String timeRange) {
         Integer startNum;
         if (current == null) {
             startNum = null;
@@ -38,7 +38,7 @@ public class HealthServiceImpl implements HealthService {
         }
         User user = userService.getUser(userId);
         String username = user.getUsername();
-        List<Weight> weightList = weightMapper.getAllByUserId(userId, startNum, pageSize);
+        List<Weight> weightList = weightMapper.getAllByUserId(userId, startNum, pageSize, timeRange);
         List<WeightModel> weightModels = new ArrayList<>();
         for (Weight weight : weightList) {
             weightModels.add(WeightModel.entityToModel(weight, username));
