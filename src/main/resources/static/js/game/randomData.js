@@ -38,7 +38,7 @@ var methods = {
         console.log("random, title: " + title + " type: " + type);
         $.ajax({
             type: "GET",
-            url: "/gu/game/random",
+            url: "/goodbook/game/random",
             data: {
                 type: type
             },

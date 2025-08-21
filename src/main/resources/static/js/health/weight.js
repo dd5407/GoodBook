@@ -342,7 +342,7 @@ var methods = {
     getItemList: function (params) {
         $.ajax({
             type: "GET",
-            url: "/gu/health/weight/getRecordByUser",
+            url: "/goodbook/health/weight/getRecordByUser",
             data: {
                 current: params.current,
                 pageSize: params.pageSize
@@ -368,7 +368,7 @@ var methods = {
     getWeightForChart: function (timeRange) {
         $.ajax({
             type: "GET",
-            url: "/gu/health/weight/getRecordByUser",
+            url: "/goodbook/health/weight/getRecordByUser",
             data: {
                 timeRange: timeRange
             },
@@ -391,7 +391,7 @@ var methods = {
         console.log(item);
         $.ajax({
             type: "POST",
-            url: "/gu/health/weight/add",
+            url: "/goodbook/health/weight/add",
             data: JSON.stringify(item),
             contentType: "application/json",
             success: function (jsonResult) {
@@ -415,7 +415,7 @@ var methods = {
     // editItem: function (item) {
     //     $.ajax({
     //         type: "POST",
-    //         url: "/gu/game/lottery/updateItem",
+    //         url: "/goodbook/game/lottery/updateItem",
     //         data: JSON.stringify(item),
     //         contentType: "application/json",
     //         success: function (jsonResult) {
@@ -439,7 +439,7 @@ var methods = {
 
         $.ajax({
             type: "POST",
-            url: "/gu/health/weight/delete/",
+            url: "/goodbook/health/weight/delete/",
             data: {
                 id: item.id
             },
@@ -462,7 +462,7 @@ var methods = {
         console.log(ids);
         $.ajax({
             type: "POST",
-            url: "/gu/health/weight/batchDelete",
+            url: "/goodbook/health/weight/batchDelete",
             //传数组需要加此参数，不然后台会获取不到值
             traditional: true,
             data: {

@@ -25,7 +25,7 @@ import java.util.List;
  * Created by dd
  * Date 2019/7/27 0:45
  */
-@RequestMapping("/gu/user/")
+@RequestMapping("/goodbook/user/")
 @Controller
 @Slf4j
 public class UserController extends BaseController {

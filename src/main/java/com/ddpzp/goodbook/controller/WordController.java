@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Controller
 @Slf4j
-@RequestMapping("/gu/word/")
+@RequestMapping("/goodbook/word/")
 public class WordController extends BaseController {
     @Autowired
     private WordService wordService;

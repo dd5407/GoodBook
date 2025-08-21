@@ -195,7 +195,7 @@ var methods = {
                 page: 1,
                 pageSize: 20
             },
-            url: "/gu/system/infos",
+            url: "/goodbook/system/infos",
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);
@@ -216,7 +216,7 @@ var methods = {
     latestInfo: function () {
         $.ajax({
             type: "GET",
-            url: "/gu/system/latestInfo",
+            url: "/goodbook/system/latestInfo",
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);

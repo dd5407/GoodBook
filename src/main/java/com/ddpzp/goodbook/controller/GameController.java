@@ -32,7 +32,7 @@ import java.util.List;
  * Date 2019/7/30 22:13
  */
 @Slf4j
-@RequestMapping("/gu/game/")
+@RequestMapping("/goodbook/game/")
 @Controller
 public class GameController extends BaseController {
     @Autowired

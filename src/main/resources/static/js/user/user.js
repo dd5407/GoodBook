@@ -40,7 +40,7 @@ function regist() {
     var password = $('#password').val();
     $.ajax({
         type: "POST",
-        url: "/gu/user/regist",
+        url: "/goodbook/user/regist",
         data: {
             username: username,
             password: password
@@ -69,7 +69,7 @@ function login() {
     var password = $('#password').val();
     $.ajax({
         type: "POST",
-        url: "/gu/user/login",
+        url: "/goodbook/user/login",
         data: {
             username: username,
             password: password

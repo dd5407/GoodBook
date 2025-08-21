@@ -359,7 +359,7 @@ var methods = {
     randomIdiom: function () {
         $.ajax({
             type: "GET",
-            url: "/gu/game/randomIdiom",
+            url: "/goodbook/game/randomIdiom",
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);
@@ -380,7 +380,7 @@ var methods = {
     idiomLoong: function (queryWord, wordIndex) {
         $.ajax({
             type: "GET",
-            url: "/gu/game/idiomLoong",
+            url: "/goodbook/game/idiomLoong",
             data: {
                 queryWord: queryWord,
                 wordIndex: wordIndex
@@ -404,7 +404,7 @@ var methods = {
     sendIdiom: function (params) {
         $.ajax({
             type: "POST",
-            url: "/gu/game/sendIdiom",
+            url: "/goodbook/game/sendIdiom",
             data: {
                 toUsername: params.toUsername,
                 guessIdiom: params.guessIdiom
@@ -427,7 +427,7 @@ var methods = {
     getGuessIdiomList: function (params) {
         $.ajax({
             type: "GET",
-            url: "/gu/game/getGuessIdiomList",
+            url: "/goodbook/game/getGuessIdiomList",
             data: params,
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
@@ -451,7 +451,7 @@ var methods = {
     deleteGuessIdiom: function (id) {
         $.ajax({
             type: "POST",
-            url: "/gu/game/deleteGuessIdiom",
+            url: "/goodbook/game/deleteGuessIdiom",
             data: {id: id},
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
@@ -471,7 +471,7 @@ var methods = {
     getGuessIdiomDetail: function (id) {
         $.ajax({
             type: "GET",
-            url: "/gu/game/getGuessIdiomDetail",
+            url: "/goodbook/game/getGuessIdiomDetail",
             data: {id: id},
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
@@ -491,7 +491,7 @@ var methods = {
         var isPass = false;
         $.ajax({
             type: "POST",
-            url: "/gu/game/guessIdiom",
+            url: "/goodbook/game/guessIdiom",
             //等待ajax返回结果再往下执行，否则isPass永远为false
             async: false,
             data: {
@@ -516,7 +516,7 @@ var methods = {
     abandonGuessIdiom: function (id) {
         $.ajax({
             type: "POST",
-            url: "/gu/game/abandonGuessIdiom",
+            url: "/goodbook/game/abandonGuessIdiom",
             data: {id: id},
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
@@ -535,7 +535,7 @@ var methods = {
     queryIdiom: function (queryIdiom) {
         $.ajax({
             type: "GET",
-            url: "/gu/game/queryIdiom",
+            url: "/goodbook/game/queryIdiom",
             data: {idiom: queryIdiom},
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {

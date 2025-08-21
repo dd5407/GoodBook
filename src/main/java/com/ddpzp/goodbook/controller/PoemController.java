@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequestMapping("/gu/poem/")
+@RequestMapping("/goodbook/poem/")
 public class PoemController {
     @Autowired
     private PoemService poemService;

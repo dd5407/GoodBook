@@ -21,7 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/gu/health/")
+@RequestMapping("/goodbook/health/")
 public class HealthController extends BaseController{
     @Autowired
     private HttpServletRequest request;

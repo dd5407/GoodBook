@@ -46,7 +46,7 @@ function queryFrog(params) {
     //请求后台
     $.ajax({
         type: "GET",
-        url: "/gu/game/frogCount",
+        url: "/goodbook/game/frogCount",
         data: {
             startNum: params.startNum,
             size: params.size,

@@ -19,11 +19,11 @@ import java.io.PrintWriter;
  * Date 2019/7/27 0:49
  */
 
-@WebFilter(urlPatterns = "/gu/*", filterName = "loginFilter")
+@WebFilter(urlPatterns = "/goodbook/*", filterName = "loginFilter")
 @Slf4j
 public class LoginFilter implements Filter {
-    private String[] passUrl = {"/gu/user/login",
-            "/gu/user/regist", "/gu/user/logout"};
+    private String[] passUrl = {"/goodbook/user/login",
+            "/goodbook/user/regist", "/goodbook/user/logout"};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequestMapping("/gu/system/")
+@RequestMapping("/goodbook/system/")
 public class SystemController extends BaseController {
     @Autowired
     private SystemService systemService;

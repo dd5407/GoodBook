@@ -5,7 +5,7 @@ $(function () {
         //按钮显示正在抽奖
         $.ajax({
             type: "GET",
-            url: "/gu/game/lottery/getRandomItem",
+            url: "/goodbook/game/lottery/getRandomItem",
             success: function (jsonResult) {
                 if (jsonResult.errorCode != 0) {
                     toastr.error(jsonResult.msg);
@@ -197,7 +197,7 @@ var methods = {
     getItemList: function () {
         $.ajax({
             type: "GET",
-            url: "/gu/game/lottery/itemList",
+            url: "/goodbook/game/lottery/itemList",
             data: {
                 current: 1,
                 pageSize: 10
@@ -223,7 +223,7 @@ var methods = {
         console.log(item);
         $.ajax({
             type: "POST",
-            url: "/gu/game/lottery/addItem",
+            url: "/goodbook/game/lottery/addItem",
             data: JSON.stringify(item),
             contentType: "application/json",
             success: function (jsonResult) {
@@ -247,7 +247,7 @@ var methods = {
     editItem: function (item) {
         $.ajax({
             type: "POST",
-            url: "/gu/game/lottery/updateItem",
+            url: "/goodbook/game/lottery/updateItem",
             data: JSON.stringify(item),
             contentType: "application/json",
             success: function (jsonResult) {
@@ -271,7 +271,7 @@ var methods = {
 
         $.ajax({
             type: "POST",
-            url: "/gu/game/lottery/deleteItem",
+            url: "/goodbook/game/lottery/deleteItem",
             data: {
                 id: item.id
             },
@@ -294,7 +294,7 @@ var methods = {
         console.log(ids);
         $.ajax({
             type: "POST",
-            url: "/gu/game/lottery/batchDelete",
+            url: "/goodbook/game/lottery/batchDelete",
             //传数组需要加此参数，不然后台会获取不到值
             traditional: true,
             data: {

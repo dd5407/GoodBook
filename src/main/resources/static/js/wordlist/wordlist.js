@@ -9,7 +9,7 @@ $(function () {
         var pageSize = 10;
         $.ajax({
             type: "GET",
-            url: "/gu/word/wordList",
+            url: "/goodbook/word/wordList",
             data: {
                 query: query,
                 current: page,
@@ -240,7 +240,7 @@ var methods = {
         var query = $('#Ktext').val();
         $.ajax({
             type: "GET",
-            url: "/gu/word/wordList",
+            url: "/goodbook/word/wordList",
             data: {
                 query: query,
                 current: page,
@@ -268,7 +268,7 @@ var methods = {
         console.log(word);
         $.ajax({
             type: "POST",
-            url: "/gu/word/addWord",
+            url: "/goodbook/word/addWord",
             data: JSON.stringify(word),
             contentType: "application/json",
             success: function (jsonResult) {
@@ -292,7 +292,7 @@ var methods = {
     editWord: function (word) {
         $.ajax({
             type: "POST",
-            url: "/gu/word/updateWord",
+            url: "/goodbook/word/updateWord",
             data: JSON.stringify(word),
             contentType: "application/json",
             success: function (jsonResult) {
@@ -316,7 +316,7 @@ var methods = {
 
         $.ajax({
             type: "POST",
-            url: "/gu/word/deleteWord",
+            url: "/goodbook/word/deleteWord",
             data: {
                 id: word.id
             },
@@ -339,7 +339,7 @@ var methods = {
         console.log(ids);
         $.ajax({
             type: "POST",
-            url: "/gu/word/batchDelete",
+            url: "/goodbook/word/batchDelete",
             //传数组需要加此参数，不然后台会获取不到值
             traditional: true,
             data: {
